@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>izzy FTP</title>
+	
+	<!--[if le IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="scripts/respond.js"></script>
+    <![endif]-->
+    
+    <!-- The following two elements pull in the styles for the default template functionality  -->
+    
+	<link href="styles/install-button.css" rel="stylesheet" type="text/css">
+	<link href="styles/normalize.css" rel="stylesheet" type="text/css">
+	
+	<!-- Below is your custom application stylesheet -->
+	
+	<link href="styles/app.css" rel="stylesheet" type="text/css">
+	
+</head>
+<body>
+<div id = "content">
+  <h1>izzy FTP</h1>
+
+<div class = "row">
+<div id = "bport">
+	<p>Port:</p>
+	<input name = "port" id = "port" type = "number" value = "21" />
+</div>
+<div id = "bhost"> 
+	<p>Host:</p>
+	<input name = "host" id = "host" type = "text" value = "ftpperso.free.fr" />
+</div>
+</div>
+
+<div class = "row">
+<div id = "blogin">
+	<p>Login:</p>
+	<input name = "login" id = "login" type = "text" />
+</div>
+<div id = "bpassword">
+	<p>Password:</p>
+	<input name = "password" id = "password" type = "password" />
+</div>
+</div>
+<div class = "row">
+	<!--button id="install-btn">Install app</button-->
+	<button id="connect" class = "button">Connect</button>
+	<input type = "checkbox">Raw</input>
+</div>
+<div class = "row">
+<pre id = "display"></pre>
+</div>
+</div>	
+
+<!-- Below is your custom application script -->
+
+<script src="scripts/izzycore.js"></script>
+<script src="scripts/izzyobject.js"></script>
+<script src="scripts/app.js"></script>
+	
+</body>
+</html>
