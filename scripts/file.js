@@ -28,3 +28,30 @@ File.prototype._parse = function(line){
 	}else throw 'Malformed file information line: '+line;
 }
 
+File.prototype.getClassNames = function(){
+    if (this.type == 'FILE'){
+        var className = 'file';
+        var index = this.name.lastIndexOf('.')
+        if (index > 0 && index < this.name.length) {
+            var ext = this.name.substring(index + 1).toLowerCase();
+            if (ext == 'html' || ext == 'htm') className = 'file text xml html';
+            else if (ext == 'xml') className = 'file text xml';
+            else if (ext == 'txt') className = 'file text';
+            else if (ext == 'js') className = 'file text javascript';
+            else if (ext == 'xls') className = 'file excel';
+            else if (ext == 'pdf') className = 'file pdf';
+            else if (ext == 'doc' || ext == 'docx') className = 'file word';
+            else if (ext == 'ppt') className = 'file powerpoint';
+            else if (ext == 'zip' || ext == 'war' || ext =='rar' || ext =='tar') className = 'file compressed';
+            else if (ext == 'png' || ext == 'gif' || ext =='jpg' || ext =='bmp' || ext == 'jpeg') className = 'file image';
+            else if (ext == 'wav' || ext == 'mp3' || ext =='midi') className = 'file music';
+            else if (ext == 'key') className = 'file key';
+            else if (ext == 'php' || ext == 'php3' || ext == 'php4' || ext == 'php5') className = 'file php';
+        }
+        return className;
+    }else if (this.type == 'DIRECTORY') return 'folder';
+    else if (this.type == 'SOCKET') return 'socket';
+    else if (this.type == 'LINK') return 'link';
+    return '';
+}
+

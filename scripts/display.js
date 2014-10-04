@@ -22,3 +22,6 @@ Display.prototype.console = function (output){
 Display.prototype.clear = function (){
 	document.$get(this.id).innerHTML = '';
 }
+Display.prototype.add = function(line, classNames){
+	document.$get(this.id).$append($new('div', line).$set({'class':classNames}));
+}

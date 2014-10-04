@@ -53,7 +53,7 @@ Socket.prototype._send = function(){
 	}
 }
 Socket.prototype.send = function(data){
-	this.debug('Send data');
+	this.debug('Send data to '+this.host+':'+this.port);
 	this.buffer += data;
 	this._send();
 }

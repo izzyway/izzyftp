@@ -32,6 +32,9 @@ float: right;
 #content{
 background: url('../app-icons/icon-48.png') no-repeat top right;
 }
+#display{
+padding: 2px;
+}
 .row{
 clear:both;
 padding: 10px 0 0 0;
@@ -46,6 +49,43 @@ padding: 10px 0 0 0;
 }
 .output, .file{
 	color: #0000C0;
+}
+.file, .folder{
+    padding: 0px 0px 5px 25px;
+	color: #0000C0;
+}
+.file{
+    background: url('../app-icons/page_white.png') no-repeat top left;
+}
+.xml{
+    background: url('../app-icons/page_white_code.png') no-repeat top left;
+}
+.php{
+    background: url('../app-icons/page_white_php.png') no-repeat top left;
+}
+.image{
+    background: url('../app-icons/picture.png') no-repeat top left;
+}
+.html{
+    background: url('../app-icons/html.png') no-repeat top left;
+}
+.compress{
+    background: url('../app-icons/compress.png') no-repeat top left;
+}
+.folder{
+    background: url('../app-icons/folder.png') no-repeat top left;
+}
+.music{
+    background: url('../app-icons/music.png') no-repeat top left;
+}
+.word{
+    background: url('../app-icons/page_word.png') no-repeat top left;
+}
+.excel{
+    background: url('../app-icons/page_excel.png') no-repeat top left;
+}
+.pdf{
+    background: url('../app-icons/page_white_acrobat.png') no-repeat top left;
 }
 .data{
 	color: #005500;
