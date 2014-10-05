@@ -8,9 +8,7 @@ function Socket(host, port, options){
 	this.host = host;
 	this.port = port;
 	this.options = (typeof options === undefined)?DEFAULT_OPTIONS:options;
-	this.debug('Connect to '+host+':'+port);
-	this.socket = this._initSocket(navigator.mozTCPSocket.open(this.host, this.port, this.options));
-
+    this.connect();
 	this._onreceived = options.received;
 	this._onerror = options.error;
 	this._onclose = options.close;
@@ -22,6 +20,12 @@ function Socket(host, port, options){
 Socket.prototype = Object.create(IzzyObject.prototype);
 Socket.prototype.constructor = Socket;
 
+Socket.prototype.connect = function(){
+    this.debug('Connecting to '+this.host+':'+this.port);
+    this.socket = this._initSocket(navigator.mozTCPSocket.open(this.host, this.port, this.options));
+    this.info('Connected to '+this.host+':'+this.port);
+    this.connected = true;
+}
 Socket.prototype._initSocket = function(socket){
 	var instance = this;
 	this.socket = socket;
@@ -43,6 +47,7 @@ Socket.prototype._error = function(evt){
 }
 Socket.prototype._close = function(evt){
 	this.debug('Close '+this.host+':'+this.port);
+	this.connected = false;
 	if (this._onclose) this._onclose.call(this);
 }
 Socket.prototype._send = function(){

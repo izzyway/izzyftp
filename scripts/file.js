@@ -1,7 +1,10 @@
 $required(IzzyObject, "IzzyObject");
 
+var __FILE_ID_GENERATOR = 0;
+
 function File(line){
 	IzzyObject.call(this);
+	this.id = 'f'+__FILE_ID_GENERATOR++;
 	this._parse(line);	
 }
 
@@ -13,7 +16,7 @@ File.prototype._parse = function(line){
 	if (matches && matches.length == 9) {
 		switch(matches[1]){
 			case 'l': this.type = 'LINK'; break;
-			case 'd': this.type = 'DIRECTORY'; break;
+			case 'd': this.type = 'FOLDER'; break;
 			case 's': this.type = 'SOCKET'; break;
 			default : this.type = 'FILE';
 		}
@@ -49,7 +52,7 @@ File.prototype.getClassNames = function(){
             else if (ext == 'php' || ext == 'php3' || ext == 'php4' || ext == 'php5') className = 'file php';
         }
         return className;
-    }else if (this.type == 'DIRECTORY') return 'folder';
+    }else if (this.type == 'FOLDER') return 'folder';
     else if (this.type == 'SOCKET') return 'socket';
     else if (this.type == 'LINK') return 'link';
     return '';

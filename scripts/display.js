@@ -22,6 +22,9 @@ Display.prototype.console = function (output){
 Display.prototype.clear = function (){
 	document.$get(this.id).innerHTML = '';
 }
-Display.prototype.add = function(line, classNames){
-	document.$get(this.id).$append($new('div', line).$set({'class':classNames}));
+Display.prototype.add = function(file){
+    document.$get(this.id).$append($new('div', file.name).$set({'class':file.getClassNames(), 'id':file.id}));
+    if (file.type == 'FILE'){
+        document.$get(file.id).$append($new('div', file.size).$set({'class':'size'}));
+    }
 }

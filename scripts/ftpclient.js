@@ -14,13 +14,12 @@ function FTPClient(display, host, port, user, password){
 	this.commandSocket = null;
 	this.dataSocket = null;
 	this.raw = false;
-	this.connected = false;
 	this.dataPort;
 	this.dataHost;
 	this.dataBuffer = '';
 	this.tree = {'/':[]};
 	this.path = '/';
-	this.scheduledCommand = false;
+	this.scheduledCommand = true;
 	this.displayedFile = 0;
 	this.commandQueue = [];
 	this.currentCommand;
@@ -48,25 +47,19 @@ FTPClient.prototype.constructor = FTPClient;
 
 FTPClient.prototype.connect = function(){
 	this.display.clear();
-	this._connect();
-	this.LIST();
-}
-FTPClient.prototype._connect = function(){
-	var instance = this;	
+	var instance = this;
 	this.currentCommand = 'CONNECTION';
-	this.debug('Connecting to '+this.host+':'+this.port);
-	this.commandSocket = new Socket(this.host, this.port, 
-					{userSecureTransport:false, 
+	this.commandSocket = new Socket(this.host, this.port,
+					{userSecureTransport:false,
 					 binaryType:'string',
 					 received: function(data){instance._received(data);},
 					 error: function(error){instance.error(error);},
 					 close: function(){instance.disconnected('command');}
 				});
-	this.info('Connected to '+this.host+':'+this.port);
-	if (this.raw) this.display.console('Connected to '+this.host+':'+this.port);	
+	if (this.raw) this.display.console('Connected to '+this.host+':'+this.port);
 	this.USER();
 	this.PASS();
-	this.PASV();
+	this.LIST();
 }
 FTPClient.prototype._received = function(data){
 	if (this.raw) this.display.input(data, 'command');
@@ -86,14 +79,15 @@ FTPClient.prototype._received = function(data){
         if (!codes) {
             this._throw('Unknown command '+command);
         }else{
-            this._checkCode(code, codes);
+            this._checkCode(code, codes, command);
             this.debug(command+' successful ('+code+')');
-            this.connected = command == 'CONNECTION' || this.connected;
-            if (code == FTPClient.NEED_DATA_CONNECTION_CODE) this._data();
-            this._nextCommand();
+            if (code == FTPClient.NEED_DATA_CONNECTION_CODE && this.dataSocket && !this.dataSocket.connected) this.dataSocket.connect();
+            this.scheduledCommand = false;
+            if (this.commandQueue.length > 0) this._nextCommand();
         }
 	}
 }
+
 FTPClient.prototype._dataReceived = function(data){
 	if (this.raw) this.display.input(data, 'data');
 	else{
@@ -103,10 +97,23 @@ FTPClient.prototype._dataReceived = function(data){
 			var line = this.dataBuffer.substring(0, index);
 			var file = new File(line);
 			this.dataBuffer = this.dataBuffer.substring(index+1);
-			this.display.add(file.name, file.getClassNames());
+			this.display.add(file);
 			this.tree[this.path].unshift(file);
+			this.hookFile(file);
 		}
 	}
+}
+FTPClient.prototype.hookFile = function(file){
+    var instance = this;
+    if (file.type == 'FOLDER'){
+        document.$get(file.id).onclick = function(){instance.openFolder(file);};
+    }
+}
+FTPClient.prototype.openFolder=function(file){
+    this.debug('Open folder '+file.name);
+    this.CWD(file.name);
+    this.display.clear();
+    this.LIST();
 }
 FTPClient.prototype._extractCode = function(data){
 	var code = 0;
@@ -114,16 +121,16 @@ FTPClient.prototype._extractCode = function(data){
 	if (matches && matches.length > 1) code = matches[1];
 	return code;
 }
-FTPClient.prototype._checkCode = function(code, codes){
+FTPClient.prototype._checkCode = function(code, codes, command){
 	var possible = codes.possible;
 	var possibleCode = false;
 	for (var index = 0; index < possible.length; index++){
 		possibleCode = possibleCode || possible[index] == code;		
 	}	
-	if (!possibleCode) this._throw('Wrong returned code ('+code+') for command '+this.currentCommand);
+	if (!possibleCode) this._throw('Wrong returned code ('+code+') for command '+command);
 	else{
 		if (code != codes.success && code != FTPClient.NEED_DATA_CONNECTION_CODE) {
-			this._throw(this.currentCommand+' failed, returned code: '+code);
+			this._throw(command+' failed, returned code: '+code);
 		}
 	} 
 }
@@ -150,24 +157,17 @@ FTPClient.prototype._parsePassiveModeReply = function(reply){
 	if (matches && matches.length == 7){
 		this.dataHost = matches[1]+'.'+matches[2]+'.'+matches[3]+'.'+matches[4];
 		this.dataPort = toDec(pad2(toHex(matches[5]))+pad2(toHex(matches[6])));
-		this.debug('Data socket: ' + host + ':' + port);
-		this._data();
+        this.dataSocket = new Socket(this.dataHost, this.dataPort,
+                    {userSecureTransport:false,
+                     binaryType:'string',
+                     received: function(data){instance._dataReceived(data);},
+                     error: function(error){instance._null(error);},
+                     close: function(){instance._null('data');}
+                });
+        if (this.raw) this.display.console('Connected to data port '+port);
 	}else{
 		this._throw('Cannot parse the passive mode reply: '+reply);
 	}	
-}
-FTPClient.prototype._data = function(){
-    this.debug('Connecting to data socket '+this.dataHost+':'+this.dataPort);
-    var instance = this;
-	this.dataSocket = new Socket(this.dataHost, this.dataPort, 
-				{userSecureTransport:false, 
-				 binaryType:'string',
-				 received: function(data){instance._dataReceived(data);},
-				 error: function(error){instance._null(error);},
-				 close: function(){instance._null('data');}
-			});
-	if (this.raw) this.display.console('Connected to data port '+port);
-	this.debug('Connected to data socket '+this.dataHost+':'+this.dataPort);
 }
 FTPClient.prototype._null = function(){
 }
@@ -212,7 +212,6 @@ FTPClient.prototype._sendCommand = function(){
 		this.scheduled--;
 	}else{
 	    this._clear();
-	    this.scheduledCommand = false;
 		this.currentCommand = this.commandQueue.shift();
 		if (this.currentCommand){
             var command = this._extractCommand(this.currentCommand);
@@ -230,11 +229,13 @@ FTPClient.prototype._extractCommand = function(command){
 	if (matches && matches.length > 1) cmd = matches[1];
 	return cmd;
 }
-FTPClient.prototype.command = function(command){
+FTPClient.prototype.command = function(command, needData){
+	if (needData && (!this.dataSocket || !this.dataSocket.connected)) this.PASV();
 	this.commandQueue.push(command);
+	this._nextCommand();
 }
 FTPClient.prototype.LIST = function(){
-	this.command('LIST');
+	this.command('LIST', true);
 }
 FTPClient.prototype.USER = function(){
 	this.command('USER '+this.context.user);
@@ -244,5 +245,8 @@ FTPClient.prototype.PASS = function(){
 }
 FTPClient.prototype.PASV = function(){
 	this.command('PASV');
+}
+FTPClient.prototype.CWD = function(name){
+	this.command('CWD '+name);
 }
 
