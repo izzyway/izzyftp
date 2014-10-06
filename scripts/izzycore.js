@@ -58,6 +58,32 @@ Element.prototype.$insert = function(element){
 	}
 	return this;
 }
+/** Return true if the element has the given class */
+Element.prototype.$hasClass = function(name){
+    if (!name || !this.className || name.length > this.className.length) return false;
+    return name == this.className ||
+        this.className.indexOf(name + ' ') == 0 ||
+        this.className.indexOf(' ' + name + ' ') > 0 ||
+        (this.className.indexOf(' '+name) != -1 && this.className.indexOf(' '+name) + name.length + 1 == this.className.length);
+}
+/** Add a class to the Element */
+Element.prototype.$addClass = function(name){
+    if (!this.$hasClass(name)){
+        if (!this.className || this.className.length == 0) this.className = name;
+        else this.className += ' '+name;
+    }
+}
+/** Remove a class from the Element */
+Element.prototype.$removeClass = function(name){
+    if (this.$hasClass(name)){
+        if (this.className == name) this.className = '';
+        else if (this.className.indexOf(name+' ') == 0) this.className = this.className.substring(name.length + 1);
+        else if (this.className.indexOf(' '+name) != -1 && this.className.indexOf(' '+name) + name.length + 1 == this.className.length){
+            var index = this.className.lastIndexOf(' ');
+            this.className = this.className.substring(0, index);
+        }else this.className = this.className.replace(' '+name, '');
+    }
+}
 /** Get an Element with the attribute id set to the given id */
 Document.prototype.$get = function(id){
 	return this.getElementById(id);

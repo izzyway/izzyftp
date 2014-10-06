@@ -41,8 +41,12 @@ padding: 10px 0 0 0;
 }
 .input, .console, .command, .data, .output{
 	padding: 2px 0px;
-	font-size: 10px;
 	font-family: courier;
+    font-size: 12px;
+}
+#path{
+    padding: 5px;
+    font-size: 18px;
 }
 .command{
 	color: #008000;
@@ -96,6 +100,12 @@ float: right;
 }
 .console{
 	color:#484848;
+}
+#viewraw{
+float: right;
+}
+.hidden{
+display: none;
 }
 
 @media (min-width: 480px) {
