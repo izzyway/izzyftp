@@ -54,7 +54,7 @@ Socket.prototype._send = function(){
 	while (this.buffer.length > 0){
 		var char = this.buffer.slice(0, 1);
 		this.buffer = this.buffer.slice(1);
-		if (!this.socket.send(char)) break;
+		if (!this.connected || !this.socket.send(char)) break;
 	}
 }
 Socket.prototype.send = function(data){
@@ -77,6 +77,7 @@ Socket.prototype.close = function(){
 	 }catch(e){
 	    this.debug('Error ('+e+') during the close of the socket '+this.host+':'+this.port);
 	 }
+	this.connected = false;
 	this.socket = null;
 }
 

@@ -12,7 +12,7 @@ File.prototype = Object.create(IzzyObject.prototype);
 File.prototype.constructor = File;
 
 File.prototype._parse = function(line){
-	var matches = line.match(/([dsl-]{1})([rwx-]{9})[\t ]+([0-9]+)[\t ]+([^\t ]+)[\t ]+([^\t ]+)[\t ]+([0-9]+)[\t ]+(.+)[\t ]+(.+)/);
+	var matches = line.match(/([dsl-]{1})([a-z-]{9})[\t ]+([0-9]+)[\t ]+([^\t ]+)[\t ]+([^\t ]+)[\t ]+([0-9]+)[\t ]+(.+)[\t ]+(.+)/);
 	if (matches && matches.length == 9) {
 		switch(matches[1]){
 			case 'l': this.type = 'LINK'; break;

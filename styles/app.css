@@ -43,6 +43,7 @@ padding: 10px 0 0 0;
 	padding: 2px 0px;
 	font-family: courier;
     font-size: 12px;
+    white-space:pre;
 }
 #path{
     padding: 5px;
@@ -63,6 +64,9 @@ float: right;
 }
 .file{
     background: url('../app-icons/page_white.png') no-repeat top left;
+}
+.text{
+    background: url('../app-icons/page_white_text.png') no-repeat top left;
 }
 .xml{
     background: url('../app-icons/page_white_code.png') no-repeat top left;

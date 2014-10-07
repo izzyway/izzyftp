@@ -15,8 +15,8 @@ function FTPClient(display, host, port, user, password){
 	this.dataPort;
 	this.dataHost;
 	this.dataBuffer = '';
-	this.tree = {'/':[]};
-	this.path = '/';
+	this.tree = {};
+	this.path;
 	this.scheduledCommand = true;
 	this.displayedFile = 0;
 	this.commandQueue = [];
@@ -106,7 +106,8 @@ FTPClient.prototype._dataReceived = function(data){
             var file = new File(line);
             this.dataBuffer = this.dataBuffer.substring(index+1);
             this.display.add(file);
-            //this.tree[this.path].unshift(file);
+            if (!this.tree[this.path]) this.tree[this.path] = [];
+            this.tree[this.path].push(file);
             this.hookFile(file);
         }
     }catch(e){
@@ -123,8 +124,31 @@ FTPClient.prototype.openFolder=function(file){
     this.debug('Open folder '+file.name);
     this.CWD(file.name);
     this.display.clear('Loading...');
-    this.PWD();
-    this.LIST();
+    this._changePath(file.name);
+    var files = this.tree[this.path];
+    if (files){
+        this.display.clear();
+        this.wait4Data = false;
+        for (var index = 0; index < files.length; index++){
+            var file = files[index];
+            this.display.add(file);
+            this.hookFile(file);
+        }
+    }else{
+        this.LIST();
+    }
+}
+FTPClient.prototype._changePath = function(folder){
+    if (folder != '.'){
+        if (folder == '..') {
+            var index = this.path.lastIndexOf('/', this.path.length);
+            this.path = this.path.substring(0, index);
+        }else{
+            if (this.path.substring(this.path - 1) == '/') this.path += folder;
+            else this.path += '/' + folder;
+        }
+        this.display.path(this.path);
+    }
 }
 FTPClient.prototype._extractCode = function(data){
 	var code = 0;
@@ -235,6 +259,8 @@ FTPClient.prototype._sendCommand = function(){
 		if (this.currentCommand){
 		    if (!this.commandSocket.connected){
 		        this.display.output('Reconnect to the FTP server');
+		        this.commandQueue.unshift(this.currentCommand);
+		        this.currentCommand = new FTPClient('CONNECTION');
 		        this.commandSocket.connect();
 		        this.display.console('Connected to '+this.host+':'+this.port);
 		    }
