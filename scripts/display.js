@@ -32,8 +32,14 @@ Display.prototype.clearAll = function (){
 	document.$get(this.rawId).innerHTML = '';
 }
 Display.prototype.add = function(file){
-    document.$get(this.id).$append($new('div', file.name).$set({'class':file.getClassNames(), 'id':file.id}));
+    var zclass = file.getClassNames();
+    document.$get(this.id).$append($new('div', file.name +file.getPrettySize()).$set({'class':zclass, 'id':file.id}));
     if (file.type == 'FILE'){
-        document.$get(file.id).$append($new('div', file.size).$set({'class':'size'}));
+        if (zclass.indexOf('text')>=0){
+                document.$get(file.id).$append($new('button', 'Edit').$set({'id':'b'+file.id}));
+        }
+    }else if (file.type == 'FOLDER'){
+        document.$get(file.id).$append($new('button', 'Open').$set({'id':'b'+file.id}));
     }
 }
+

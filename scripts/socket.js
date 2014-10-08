@@ -37,7 +37,7 @@ Socket.prototype._initSocket = function(socket){
 }
 Socket.prototype._received = function(evt){
 	var data = evt.data;
-	this.debug('Received ('+evt.type+') '+data);
+	this.debug('<< '+data);
 	if (this._onreceived) this._onreceived.call(this, data);
 }
 Socket.prototype._error = function(evt){

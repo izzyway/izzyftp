@@ -59,6 +59,10 @@ padding: 10px 0 0 0;
     padding: 0px 0px 5px 25px;
 	color: #0000C0;
 }
+#display button{
+margin: 0 5px;
+float: right;
+}
 .size{
 float: right;
 }
@@ -85,10 +89,12 @@ float: right;
 }
 .folder{
     background: url('../app-icons/folder.png') no-repeat top left;
-    cursor: pointer;
 }
 .music{
     background: url('../app-icons/music.png') no-repeat top left;
+}
+.css{
+    background: url('../app-icons/css.png') no-repeat top left;
 }
 .word{
     background: url('../app-icons/page_word.png') no-repeat top left;
