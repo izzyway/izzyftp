@@ -10,7 +10,7 @@ function File(line){
 
 File.prototype = Object.create(IzzyObject.prototype);
 File.prototype.constructor = File;
-File.UNITS = ['B', 'KB', 'MB', 'GB', 'TB'];
+File.UNITS = ['', 'K', 'M', 'G', 'T'];
 
 File.prototype._parse = function(line){
 	var matches = line.match(/([dsl-]{1})([a-zA-Z-]{9})[\t ]+([0-9]+)[\t ]+([^\t ]+)[\t ]+([^\t ]+)[\t ]+([0-9]+)[\t ]+(.+)[\t ]+(.+)/);
@@ -45,7 +45,7 @@ File.prototype.getPrettySize = function(){
         if (dec == '00') dec = '';
         else if (dec[1] == '0') dec = '.' + dec[0];
         else dec = '.'+dec;
-        return ' ('+trunc + dec + File.UNITS[index] + ')';
+        return trunc + dec + File.UNITS[index];
     }
     return '';
 }

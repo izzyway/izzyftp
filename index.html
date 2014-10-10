@@ -5,56 +5,43 @@
 	<meta name="viewport" content="width=device-width">
 	<title>izzy FTP</title>
 	
-	<!--[if le IE 9]>
-      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-      <script src="scripts/respond.js"></script>
-    <![endif]-->
-    
-    <!-- The following two elements pull in the styles for the default template functionality  -->
-    
-	<link href="styles/install-button.css" rel="stylesheet" type="text/css">
-	<link href="styles/normalize.css" rel="stylesheet" type="text/css">
-	
-	<!-- Below is your custom application stylesheet -->
-	
 	<link href="styles/app.css" rel="stylesheet" type="text/css">
 	
 </head>
 <body>
 <div id = "content">
-  <h1>izzy FTP</h1>
-
-<div class = "row">
-<div id = "bport">
-	<p>Port:</p>
-	<input name = "port" id = "port" type = "number" value = "21" />
-</div>
-<div id = "bhost"> 
-	<p>Host:</p>
-	<input name = "host" id = "host" type = "text" value = "ftpperso.free.fr" />
-</div>
-</div>
-
-<div class = "row">
-<div id = "blogin">
-	<p>Login:</p>
-	<input name = "login" id = "login" type = "text" />
-</div>
-<div id = "bpassword">
-	<p>Password:</p>
-	<input name = "password" id = "password" type = "password" />
-</div>
-</div>
-<div class = "row">
-	<!--button id="install-btn">Install app</button-->
-	<button id="connect" class = "button">Connect</button>
-    <button id="viewraw" class = "button">View raw</button>
-</div>
-<div class = "row" id = "data">
-    <div id = "path"></div>
-    <div id = "display"></div>
-</div>
-<div class = "row hidden" id = "raw"></div>
+    <h1 id = "title">izzy FTP</h1>
+    <div id = "connection">
+        <div>
+            <p>Host:</p>
+            <input name = "host" id = "host" type = "text" value = "ftpperso.free.fr" />
+        </div>
+        <div>
+            <p>Port:</p>
+            <input name = "port" id = "port" type = "number" value = "21" />
+        </div>
+        <div>
+            <p>Login:</p>
+            <input name = "login" id = "login" type = "text" />
+        </div>
+        <div>
+            <p>Password:</p>
+            <input name = "password" id = "password" type = "password" />
+        </div>
+        <div id = "connectbutton">
+            <button id="connect" class = "button">Connect</button>
+        </div>
+    </div>
+    <div id = "header" class = "hidden">
+        <img id = "connected" />
+        <button id="viewraw" class = "button">View raw</button>
+        <button id="disconnect" class = "button">Disconnect</button>
+    </div>
+    <div id = "data" class = "hidden">
+        <div id = "path"></div>
+        <div id = "display"></div>
+    </div>
+    <div class = "hidden" id = "raw"></div>
 </div>	
 
 <!-- Below is your custom application script -->

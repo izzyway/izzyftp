@@ -1,43 +1,60 @@
 /*Default CSS layout for narrow screens*/
 h1{
-margin: 2px;
+    margin: 2px;
 }
 input{
-width: 100%;
--webkit-box-sizing : border-box;‌​
+    width: 100%;
+    -webkit-box-sizing : border-box;‌​
     -moz-box-sizing : border-box;
     box-sizing : border-box;
 }
-div, p, input{
-padding: 0;
-margin: 0;
-}
-span{
-padding: 0 2px;
-}
-#blogin, #bpassword{
-float: left;
-padding: 0;
-margin: 0;
-width: 50%;
+div, p{
+    padding: 0;
+    margin: 0;
 }
 
-#bhost{
-margin-right: 101px;
-}
-#bport{
-width: 100px;
-float: right;
-}
 #content{
-background: url('../app-icons/icon-48.png') no-repeat top right;
+    background: url('../app-icons/icon-48.png') no-repeat top right;
+    font-family: arial;
+    font-size: 16px;
+}
+input, button{
+    font-size: 16px;
+}
+#connection p{
+    padding: 20px 0 0 0;
+}
+#connection button{
+    font-size: 20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+#connectbutton{
+    text-align: center;
+    width: 100%;
+    padding: 20px 0;
 }
 #display{
-padding: 2px;
+    padding: 2px;
 }
-.row{
-clear:both;
-padding: 10px 0 0 0;
+#viewraw{
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+#connected{
+   position: absolute;
+   top: 5px;
+   left: 210px;
+}
+#disconnect{
+   position: absolute;
+   top: 2px;
+   left: 100px;
+}
+#header{
+    height: 25px;
 }
 .input, .console, .command, .data, .output{
 	padding: 2px 0px;
@@ -60,11 +77,8 @@ padding: 10px 0 0 0;
 	color: #0000C0;
 }
 #display button{
-margin: 0 5px;
-float: right;
-}
-.size{
-float: right;
+    margin: 0 5px;
+    float: right;
 }
 .file{
     background: url('../app-icons/page_white.png') no-repeat top left;
@@ -112,10 +126,10 @@ float: right;
 	color:#484848;
 }
 #viewraw{
-float: right;
+    float: right;
 }
 .hidden{
-display: none;
+    display: none;
 }
 
 @media (min-width: 480px) {
