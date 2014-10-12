@@ -35,14 +35,16 @@ Display.prototype.add = function(file){
     var zclass = file.getClassNames();
     var size = file.getPrettySize();
     if (size != '') size = ' ('+size+')';
-    document.$get(this.id).$append($new('div', file.name + size).$set({'class':zclass, 'id':file.id}));
+    var main = $new('div').$set({'id':file.id, 'class':'filerow'});
+    document.$get(this.id).$append(main);
+    main.$append($new('span', file.name + size).$set({'class':zclass, 'id':'i'+file.id}));
     if (file.type == 'FILE'){
         if (zclass.indexOf('text')>=0){
-                document.$get(file.id).$append($new('button', 'Edit').$set({'id':'b'+file.id}));
+                main.$append($new('button', 'Edit').$set({'id':'b'+file.id}));
         }
     }else if (file.type == 'FOLDER' && file.name != '.'){
-        if (file.name == '..') document.$get(file.id).$append($new('button', '⏎').$set({'id':'b'+file.id}));
-        else document.$get(file.id).$append($new('button', 'Open').$set({'id':'b'+file.id}));
+        if (file.name == '..') main.$append($new('button', '⏎').$set({'id':'b'+file.id}));
+        else main.$append($new('button', 'Open').$set({'id':'b'+file.id}));
     }
 }
 

@@ -33,6 +33,7 @@ File.prototype._parse = function(line){
 }
 File.prototype.getPrettySize = function(){
     if (this.size && this.type == 'FILE'){
+        if (this.size == '0') return '0';
         var index = 0;
         var size = this.size;
         while (size > 1024 && index < File.UNITS.length) {

@@ -10,17 +10,18 @@ function FTPClient(display, host, port, user, password){
 	this.port = port;
 	this.context = {'user':user, 'password':password};
 	this.display = display;
-	this.commandSocket = null;
-	this.dataSocket = null;
+	this.commandSocket;
+	this.dataSocket;
 	this.dataPort;
 	this.dataHost;
-	this.dataCallback;
 	this.tree = {};
 	this.path;
 	this.displayedFile = 0;
 	this.commandQueue = [];
-	this.currentCommand = null;
+	this.currentCommand;
+	this.currentFile;
 	this.queue = true;
+	this.buffer;
 }
 FTPClient.REPLY_CODES = {
     CONNECTION: {possible:[120, 220, 421], success:220},
@@ -78,6 +79,9 @@ FTPClient.prototype._received = function(data){
 	if (code == FTPClient.CLOSE_DATA_CONNECTION_CODE) {
 	    if (this.dataSocket) this.dataSocket.close();
 	    this.debug('Data connection closed');
+	    if (this.currentCommand.dataCallback) this.currentCommand.dataCallback.call(this, this.buffer);
+	    this.buffer = '';
+	    this.currentCommand = null;
 	}else{
 	    try{
             var codes = FTPClient.REPLY_CODES[this.currentCommand.command];
@@ -92,8 +96,7 @@ FTPClient.prototype._received = function(data){
                     this.currentCommand.callback.call(this, data);
                 }
             }
-            this.dataCallback = this.currentCommand.callbackData;
-            this.currentCommand = null;
+            if (!this.currentCommand.dataCallback) this.currentCommand = null;
             this._nextCommand();
         }catch(e){
             this._throw(e);
@@ -102,12 +105,7 @@ FTPClient.prototype._received = function(data){
 }
 
 FTPClient.prototype._dataReceived = function(data){
-    try{
-        this.display.input(data, 'data');
-        if (this.dataCallback) this.dataCallback.call(this, data);
-    }catch(e){
-        this._throw(e);
-    }
+    this.buffer += data;
 }
 FTPClient.prototype._list = function(data){
     this.display.clear();
@@ -123,7 +121,9 @@ FTPClient.prototype._list = function(data){
     }
 }
 FTPClient.prototype._retr = function(data){
-
+    document.$get('filecontent').value = data;
+    document.$get('data').$addClass('hidden');
+    document.$get('fileopen').$removeClass('hidden');
 }
 FTPClient.prototype.hookFile = function(file){
     var instance = this;
@@ -136,8 +136,29 @@ FTPClient.prototype.hookFile = function(file){
     }
 }
 FTPClient.prototype.openTextFile=function(file){
+    this.currentFile = file;
     this.TYPE('A');
     this.RETR(file.name);
+    document.$get('filename').innerHTML = file.name;
+    document.$get('fileinfo').innerHTML = '';
+
+}
+FTPClient.prototype.saveFile = function(){
+    document.$get('fileinfo').innerHTML = 'Saving...';
+    this.PASV();
+    this.STOR(this.currentFile.name);
+}
+FTPClient.prototype._sendTextData = function(){
+    var data = document.$get('filecontent').value;
+    this.debug('>> '+data);
+    this.display.output(data);
+    this.dataSocket.send(data);
+    this.dataSocket.close();
+    this.currentFile.size = data.length;
+    var size = this.currentFile.getPrettySize();
+    if (size != '') size = ' ('+size+')';
+    document.$get('i'+this.currentFile.id).innerHTML = this.currentFile.name + size;
+    document.$get('fileinfo').innerHTML = 'Saved';
 }
 FTPClient.prototype.openFolder=function(file){
     this.debug('Open folder '+file.name);
@@ -278,7 +299,7 @@ FTPClient.prototype._sendCommand = function(){
     }
 }
 FTPClient.prototype.command = function(command){
-	if (command.callbackData && (!this.dataSocket || !this.dataSocket.connected)) this.PASV();
+	if (command.dataCallback && (!this.dataSocket || !this.dataSocket.connected)) this.PASV();
 	if (this.queue) this.commandQueue.push(command);
 	else this.commandQueue.unshift(command);
 	this._nextCommand();
@@ -313,14 +334,21 @@ FTPClient.prototype.RETR = function(name){
     var instance = this;
  	this.command(new FTPCommand('RETR', name, null, null, function(data){instance._retr(data);}));
 }
+FTPClient.prototype.STOR = function(name){
+    var instance = this;
+ 	this.command(new FTPCommand('STOR', name, null, function(reply){instance._sendTextData(reply);}));
+}
 FTPClient.prototype.TYPE = function(type){
  	this.command(new FTPCommand('TYPE', type));
 }
+FTPClient.prototype.reset = function(){
+    this.context = null;
+}
 
-function FTPCommand(command, parameter, pretty, callback, callbackData){
+function FTPCommand(command, parameter, pretty, callback, dataCallback){
     this.command = command;
     this.parameter = parameter?' '+parameter:'';
     this.pretty = pretty?pretty:this.command + this.parameter;
     this.callback = callback;
-    this.callbackData = callbackData;
+    this.dataCallback = dataCallback;
 }

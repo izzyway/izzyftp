@@ -12,9 +12,11 @@ div, p{
     padding: 0;
     margin: 0;
 }
-
-#content{
+html{
     background: url('../app-icons/icon-48.png') no-repeat top right;
+
+}
+#content{
     font-family: arial;
     font-size: 16px;
 }
@@ -46,7 +48,12 @@ input, button{
 #connected{
    position: absolute;
    top: 5px;
-   left: 210px;
+   left: 248px;
+}
+#about{
+    position: absolute;
+    top: 2px;
+    left: 210px;
 }
 #disconnect{
    position: absolute;
@@ -76,9 +83,36 @@ input, button{
     padding: 0px 0px 5px 25px;
 	color: #0000C0;
 }
+.filerow{
+    height: 25px;
+}
+#aboutpopup{
+    border: 2px solid #953734;
+    padding: 20px;
+    background: white;
+    position: absolute;
+    top: 50px;
+    border-radius: 5px;
+}
 #display button{
     margin: 0 5px;
     float: right;
+    clear: both;
+}
+#fileopen{
+    position: absolute;
+    top: 52px;
+    left: 5px;
+    right: 8px;
+    bottom: 35px;
+}
+#fileopen textarea{
+    width: 100%;
+    height: 100%;
+}
+#filename{
+    position: absolute;
+    top: -21px;
 }
 .file{
     background: url('../app-icons/page_white.png') no-repeat top left;
