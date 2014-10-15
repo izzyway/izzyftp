@@ -44,6 +44,7 @@ function raw(){
     if (document.$get('raw').$hasClass('hidden')){
         document.$get('raw').$removeClass('hidden');
         document.$get('data').$addClass('hidden');
+        document.$get('image').$addClass('hidden');
         document.$get('fileopen').$addClass('hidden');
         document.$get('viewraw').innerHTML = 'View data';
     }else{

@@ -28,6 +28,9 @@ File.prototype._parse = function(line){
 		this.size = matches[6];
 		this.lastModified = matches[7];
 		this.name = matches[8];
+		var index = this.name.lastIndexOf('.')
+        if (index >= 0 && index < this.name.length) this.ext = this.name.substring(index + 1).toLowerCase();
+        else this.ext = '';
 		this.debug('Name: '+this.name+' size: '+this.size);
 	}else throw 'Malformed file information line: '+line;
 }
@@ -53,31 +56,28 @@ File.prototype.getPrettySize = function(){
 File.prototype.getClassNames = function(){
     if (this.type == 'FILE'){
         var className = 'file';
-        var index = this.name.lastIndexOf('.')
-        if (index > 0 && index < this.name.length) {
-            var ext = this.name.substring(index + 1).toLowerCase();
-            if (ext == 'html' || ext == 'htm') className = 'file text xml html';
-            else if (ext == 'xml') className = 'file text xml';
-            else if (ext == 'txt') className = 'file text';
-            else if (ext == 'css') className = 'file text css';
-            else if (ext == 'conf') className = 'file text configuration';
-            else if (ext == 'properties' || ext == 'property' || ext == 'prop') className = 'file text configuration';
-            else if (ext == 'js') className = 'file text javascript';
-            else if (ext == 'xls') className = 'file excel';
-            else if (ext == 'py') className = 'file text python';
-            else if (ext == 'log') className = 'file text log';
-            else if (ext == 'sh') className = 'file text shell';
-            else if (ext == 'pdf') className = 'file pdf';
-            else if (ext == 'sql') className = 'file text sql';
-            else if (ext == 'md') className = 'file text markdown';
-            else if (ext == 'doc' || ext == 'docx') className = 'file word';
-            else if (ext == 'ppt') className = 'file powerpoint';
-            else if (ext == 'zip' || ext == 'war' || ext =='rar' || ext =='tar'|| ext =='bz2') className = 'file compressed';
-            else if (ext == 'png' || ext == 'gif' || ext =='jpg' || ext =='bmp' || ext == 'jpeg') className = 'file image';
-            else if (ext == 'wav' || ext == 'mp3' || ext =='midi') className = 'file music';
-            else if (ext == 'key') className = 'file key';
-            else if (ext == 'php' || ext == 'php3' || ext == 'php4' || ext == 'php5') className = 'file text php';
-        }
+        if (this.ext == 'html' || this.ext == 'htm') className = 'file text xml html';
+        else if (this.ext == 'xml') className = 'file text xml';
+        else if (this.ext == 'txt') className = 'file text';
+        else if (this.ext == 'css') className = 'file text css';
+        else if (this.ext == 'conf') className = 'file text configuration';
+        else if (this.ext == 'properties' || this.ext == 'property' || this.ext == 'prop') className = 'file text configuration';
+        else if (this.ext == 'js') className = 'file text javascript';
+        else if (this.ext == 'xls') className = 'file excel';
+        else if (this.ext == 'py') className = 'file text python';
+        else if (this.ext == 'log') className = 'file text log';
+        else if (this.ext == 'sh') className = 'file text shell';
+        else if (this.ext == 'pdf') className = 'file pdf';
+        else if (this.ext == 'sql') className = 'file text sql';
+        else if (this.ext == 'htaccess') className = 'file text htaccess';
+        else if (this.ext == 'md') className = 'file text markdown';
+        else if (this.ext == 'doc' || this.ext == 'docx') className = 'file word';
+        else if (this.ext == 'ppt') className = 'file powerpoint';
+        else if (this.ext == 'zip' || this.ext == 'war' || this.ext =='rar' || this.ext =='tar'|| this.ext =='bz2') className = 'file compressed';
+        else if (this.ext == 'png' || this.ext == 'gif' || this.ext =='jpg' || this.ext =='bmp' || this.ext == 'jpeg') className = 'file image';
+        else if (this.ext == 'wav' || this.ext == 'mp3' || this.ext =='midi') className = 'file music';
+        else if (this.ext == 'key') className = 'file key';
+        else if (this.ext == 'php' || this.ext == 'php3' || this.ext == 'php4' || this.ext == 'php5') className = 'file text php';
         return className;
     }else if (this.type == 'FOLDER') return 'folder';
     else if (this.type == 'SOCKET') return 'socket';

@@ -58,7 +58,7 @@ input, button{
 #disconnect{
    position: absolute;
    top: 2px;
-   left: 100px;
+   left: 98px;
 }
 #header{
     height: 25px;
@@ -84,7 +84,13 @@ input, button{
 	color: #0000C0;
 }
 .filerow{
-    height: 25px;
+    height: 44px;
+    padding: 5px 0;
+    border-bottom: 1px dotted lightgray;
+}
+.filerow span{
+    top: 12px;
+    position: relative;
 }
 #aboutpopup{
     border: 2px solid #953734;
@@ -98,6 +104,7 @@ input, button{
     margin: 0 5px;
     float: right;
     clear: both;
+    padding: 10px;
 }
 #fileopen{
     position: absolute;

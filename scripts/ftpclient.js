@@ -121,9 +121,15 @@ FTPClient.prototype._list = function(data){
     }
 }
 FTPClient.prototype._retr = function(data){
-    document.$get('filecontent').value = data;
-    document.$get('data').$addClass('hidden');
-    document.$get('fileopen').$removeClass('hidden');
+    if (this.currentFile.getClassNames().indexOf('text')>=0){
+        document.$get('filecontent').value = data;
+        document.$get('data').$addClass('hidden');
+        document.$get('fileopen').$removeClass('hidden');
+    }else{
+        document.$get('image').$append($new('img').$set({src:'data:image/'+this.currentFile.ext+';base64,'+btoa(data)}));
+        document.$get('data').$addClass('hidden');
+        document.$get('image').$removeClass('hidden');
+    }
 }
 FTPClient.prototype.hookFile = function(file){
     var instance = this;
@@ -141,7 +147,12 @@ FTPClient.prototype.openTextFile=function(file){
     this.RETR(file.name);
     document.$get('filename').innerHTML = file.name;
     document.$get('fileinfo').innerHTML = '';
-
+}
+FTPClient.prototype.openImageFile=function(file){
+    this.currentFile = file;
+    this.TYPE('I');
+    this.RETR(file.name);
+    document.$get('image').innerHTML = '';
 }
 FTPClient.prototype.saveFile = function(){
     document.$get('fileinfo').innerHTML = 'Saving...';
