@@ -38,6 +38,11 @@ Socket.prototype._initSocket = function(socket){
 Socket.prototype._received = function(evt){
 	var data = evt.data;
 	this.debug('<< '+data);
+	if (typeof data === 'object' && data.byteLength){
+	    var length = data.byteLength;
+	    this.debug('Array of '+length+' bytes');
+	    data = new Uint8Array(data);
+	}
 	if (this._onreceived) this._onreceived.call(this, data);
 }
 Socket.prototype._error = function(evt){

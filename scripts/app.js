@@ -4,6 +4,8 @@ document.$get('viewraw').addEventListener('click', raw, false);
 document.$get('disconnect').addEventListener('click', disconnect, false);
 document.$get('filesave').addEventListener('click', filesave, false);
 document.$get('filecancel').addEventListener('click', filecancel, false);
+document.$get('imageclose').addEventListener('click', imageclose, false);
+document.$get('reload').addEventListener('click', reload, false);
 document.$get('about').addEventListener('click', about, false);
 
 $include('scripts/display.js');
@@ -54,9 +56,17 @@ function raw(){
     }
     document.$get('aboutpopup').$addClass('hidden');
 }
+function reload(){
+    ftp.reload();
+}
 
 function filecancel(){
     document.$get('fileopen').$addClass('hidden');
+    document.$get('data').$removeClass('hidden');
+}
+
+function imageclose(){
+    document.$get('imageopen').$addClass('hidden');
     document.$get('data').$removeClass('hidden');
 }
 

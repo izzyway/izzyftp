@@ -43,7 +43,7 @@ Display.prototype.add = function(file){
             if (zclass.indexOf('text')>=0){
                     main.$append($new('button', 'Edit').$set({'id':'b'+file.id}));
             }else if (zclass.indexOf('image')>=0){
-                     //main.$append($new('button', 'View').$set({'id':'b'+file.id}));
+                     main.$append($new('button', 'View').$set({'id':'b'+file.id}));
             }
         }else if (file.type == 'FOLDER' && file.name != '.'){
             if (file.name == '..') main.$append($new('button', '⏎').$set({'id':'b'+file.id}));

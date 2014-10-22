@@ -34,7 +34,8 @@
     </div>
     <div id = "header" class = "hidden">
         <img id = "connected" />
-        <button id="viewraw" class = "button">View raw</button>
+        <button id="viewraw" class = "button">Raw</button>
+        <button id="reload" class = "button">Refresh</button>
         <button id="disconnect" class = "button">Disconnect</button>
         <button id="about" class = "button">?</button>
     </div>
@@ -50,7 +51,10 @@
         <button id="filesave" class = "button">Save</button>
         <span id = "fileinfo"></span>
     </div>
-    <div class = "hidden" id = "image"></div>
+    <div class = "hidden" id = "imageopen">
+        <div id = "image"></div>
+        <button id="imageclose" class = "button">Close</button>
+    </div>
     <div class = "hidden" id = "aboutpopup">
         See <a href = "http://izzyway.com/" target = "_blank">izzyway.com</a>
     </div>
