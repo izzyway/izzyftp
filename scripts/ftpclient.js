@@ -111,26 +111,37 @@ FTPClient.prototype._list = function(data){
     this.data += data;
     this.display.clear();
     var index;
-    while ((index = this.data.indexOf('\n')) > 0){
-        var line = this.data.substring(0, index);
+    this.tree[this.path] = [];
+    var temp = this.data;
+    while ((index = temp.indexOf('\n')) > 0){
+        var line = temp.substring(0, index);
         var file = new File(line);
-        this.data = this.data.substring(index+1);
+        temp = temp.substring(index+1);
         this.display.add(file);
-        if (!this.tree[this.path]) this.tree[this.path] = [];
         this.tree[this.path].push(file);
         this.hookFile(file);
     }
 }
 FTPClient.prototype._retr = function(data){
-    if (this.currentFile.getClassNames().indexOf('text')>=0){
-        this.data += data;
-        document.$get('filecontent').value = this.data;
-        document.$get('data').$addClass('hidden');
-        document.$get('fileopen').$removeClass('hidden');
-    }else{
-        document.$get('image').$append($new('img').$set({src:$base64(data)}));
-        document.$get('data').$addClass('hidden');
-        document.$get('imageopen').$removeClass('hidden');
+    try{
+        if (this.currentFile.getClassNames().indexOf('text')>=0){
+            this.data += data;
+            document.$get('filecontent').value = this.data;
+            document.$get('data').$addClass('hidden');
+            document.$get('fileopen').$removeClass('hidden');
+        }else{
+            var temp = this.data;
+            this.data =  new Uint8Array(temp.length + data.length);
+            for (var index = 0; index < temp.length; index++) this.data[index] = temp[index];
+            for (var index = 0; index < data.length; index++) this.data[index + temp.length] = data[index];
+            this.debug('Image length '+this.data.length);
+            document.$get('image').innerHTML = '';
+            document.$get('image').$append($new('img').$set({src:'data:image/'+this.currentFile.ext+';base64,'+$base64(this.data)}));
+            document.$get('data').$addClass('hidden');
+            document.$get('imageopen').$removeClass('hidden');
+        }
+    }catch(e){
+        this._throw(e);
     }
 }
 FTPClient.prototype.hookFile = function(file){
@@ -154,10 +165,11 @@ FTPClient.prototype.openTextFile=function(file){
     document.$get('fileinfo').innerHTML = '';
 }
 FTPClient.prototype.openImageFile=function(file){
+    this.data =  new Uint8Array(0);
     this.currentFile = file;
     this.TYPE('I');
     this.RETR(file.name);
-    document.$get('image').innerHTML = '';
+    document.$get('imagename').innerHTML = file.name;
 }
 FTPClient.prototype.saveFile = function(){
     document.$get('fileinfo').innerHTML = 'Saving...';
@@ -178,6 +190,7 @@ FTPClient.prototype._sendTextData = function(){
 }
 FTPClient.prototype.openFolder=function(file){
     this.debug('Open folder '+file.name);
+    this.TYPE('A');
     this.CWD(file.name);
     this.display.clear('Loading...');
     this._changePath(file.name);
@@ -367,6 +380,9 @@ FTPClient.prototype.TYPE = function(type){
 }
 FTPClient.prototype.reset = function(){
     this.context = null;
+    this.tree = {};
+    this.currentCommand = null;
+    this.commandQueue = [];
 }
 
 function FTPCommand(command, parameter, pretty, callback, dataCallback){
