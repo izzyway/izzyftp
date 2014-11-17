@@ -27,6 +27,9 @@
 	"permissions" : {
   		"tcp-socket" : {
 		 	"description" : "Create TCP sockets and communicate over them."
+		},
+		"systemXHR":{
+		    "description" : "Bug reporting, only after user validation and with anonymous data"
 		}
 	}
 }

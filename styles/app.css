@@ -130,6 +130,28 @@ input, button{
     position: absolute;
     top: -21px;
 }
+#error{
+    border: 2px solid #F00;
+    padding: 2px;
+    font-size: 12px;
+}
+#thanks{
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+#message{
+    padding: 15px 0;
+    font-weight: bold;
+}
+#bugbutton{
+    text-align: center;
+    padding: 13px;
+}
+#bug{
+    padding: 15px;
+}
 .file{
     background: url('../app-icons/page_white.png') no-repeat top left;
 }

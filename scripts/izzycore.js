@@ -24,7 +24,11 @@ function $isNumber(n){
 /** return true if the input obj is a string */
 function $isString(s){
 	return typeof(s) == 'string';
-}	
+}
+/** return true if the input obj is a function */
+function $isFunction(f){
+    return typeof(f) == 'function';
+}
 /** return true is the input obj is a date */
 function $isDate(d){
 	return d.getTime;
@@ -72,6 +76,7 @@ Element.prototype.$addClass = function(name){
         if (!this.className || this.className.length == 0) this.className = name;
         else this.className += ' '+name;
     }
+    return this;
 }
 /** Remove a class from the Element */
 Element.prototype.$removeClass = function(name){
@@ -83,6 +88,7 @@ Element.prototype.$removeClass = function(name){
             this.className = this.className.substring(0, index);
         }else this.className = this.className.replace(' '+name, '');
     }
+    return this;
 }
 /** Get an Element with the attribute id set to the given id */
 Document.prototype.$get = function(id){
@@ -152,8 +158,10 @@ function $stringify(o){
 	if ($isString(o) || $isNumber(o) || $isDate(o)) return o;
 	var str = '';
 	for (var key in o){
-		if (str != '') str += ' ';
-		str += key+':'+o[key];
+	    if (typeof key !== 'undefined' && o.hasOwnProperty(key)){
+	    	if (str != '') str += ' ';
+		    str += key+':'+o[key];
+		}
 	}	
 	return str;
 }
@@ -183,4 +191,45 @@ function $base64(input) {
                   keyStr.charAt(enc3) + keyStr.charAt(enc4);
     }
     return output;
+}
+function $http(method, url, options){
+    var http = window.XMLHttpRequest?new window.XMLHttpRequest({mozSystem: true}):new window.ActiveXObject( "Microsoft.XMLHTTP" );
+    if (http){
+        var data = options?options.data:null;
+        $log(method + ' ' + url);
+        http.open(method, url, true);
+        if (options && $isJSONObject(options.headers)){
+            for (var key in options.headers){
+                if (typeof key !== 'undefined' && options.headers.hasOwnProperty(key)){
+                    var value = options.headers[key];
+                    http.setRequestHeader(key, value);
+                }
+            }
+        }
+        if (options) http.onreadystatechange = function() {
+          if (http.readyState == 4){
+            var response = http.responseText;
+            if (http.status == 200){
+                $log(method + ' ' + url  + ': successful '+($isFunction(options.success)?'(calling function)':''));
+                if ($isFunction(options.success)) options.success.call(this, response, http.status);
+            }else{
+                $log(method + ' ' + url + ': error '+http.status+($isFunction(options.error)?' (calling function)':''));
+                if ($isFunction(options.error)) options.error.call(this, response, http.status);
+            }
+          }
+        }
+        http.send(data);
+    }else $log('Unable to create HttpRequest Object');
+}
+function $GET(url, options){
+    $http('GET', url, options);
+}
+function $POST(url, options){
+    $http('POST', url, options);
+}
+function $PUT(url, options){
+    $http('PUT', url, options);
+}
+function $DELETE(url, options){
+    $http('DELETE', url, options);
 }

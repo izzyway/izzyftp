@@ -66,8 +66,8 @@ FTPClient.prototype.connecting = function(){
 	this.connected();
 	this.queue = false;
 	if (this.path) this.CWD(this.path);
-	this.PASS();
-	this.USER();
+	if (!this.context.password && this.context.password != '') this.PASS();
+	if (!this.context.user && this.context.user != '') this.USER();
 	this.queue = true;
 }
 FTPClient.prototype.connected = function(){
@@ -223,7 +223,7 @@ FTPClient.prototype._changePath = function(folder){
 }
 FTPClient.prototype._extractCode = function(data){
 	var code = 0;
-	var matches = data.match(/^([0-9]{3}) .*/);
+	var matches = data.match(/^([0-9]{3}).*/);
 	if (matches && matches.length > 1) code = matches[1];
 	return code;
 }
@@ -310,7 +310,10 @@ FTPClient.prototype._throw = function(msg){
     this.display.console(msg);
 	this.debug(msg);
 	this.close();
-	throw msg;
+	document.$get('data').$addClass('hidden');
+	document.$get('raw').$addClass('hidden');
+    document.$get('error').$removeClass('hidden');
+    document.$get('message').innerHTML = msg;
 }
 FTPClient.prototype._nextCommand = function(){
 	if (this.currentCommand == null){
@@ -381,7 +384,6 @@ FTPClient.prototype.TYPE = function(type){
 FTPClient.prototype.reset = function(){
     this.context = null;
     this.tree = {};
-    this.currentCommand = null;
     this.commandQueue = [];
 }
 
