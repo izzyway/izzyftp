@@ -66,8 +66,10 @@ FTPClient.prototype.connecting = function(){
 	this.connected();
 	this.queue = false;
 	if (this.path) this.CWD(this.path);
-	if (!this.context.password && this.context.password != '') this.PASS();
-	if (!this.context.user && this.context.user != '') this.USER();
+	if (this.context.password != '') this.PASS();
+	else this.debug('No password');
+	if (this.context.user != '') this.USER();
+	else this.debug('No user');
 	this.queue = true;
 }
 FTPClient.prototype.connected = function(){

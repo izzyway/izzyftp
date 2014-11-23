@@ -92,7 +92,7 @@ function reportbug(){
     report = report.replace(/USER [^\n]+/g, 'USER ******');
     report = report.replace(/Connected to [^\n]+/g, 'Connected to ......');
     report = 'data='+report;
-    $POST('http://firefox.izzyway.com/bug.php',
+    $POST('http://izzyway.free.fr/firefox/bug.php',
         {   data:report,
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
             success: function(data, code){$log(data);document.$get('thanks').$removeClass('hidden').innerHTML='Thanks'; document.$get('bug').$addClass('hidden'); },
