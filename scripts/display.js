@@ -21,8 +21,9 @@ Display.prototype.output = function (output){
 Display.prototype.path = function (path){
 	document.$get(this.pathId).innerHTML = path;
 }
-Display.prototype.console = function (output){
-	this.$log(output, 'console');
+Display.prototype.console = function (output, className){
+	if (className) this.$log(output, 'console '+className);
+	else this.$log(output, 'console');
 }
 Display.prototype.clear = function (msg){
 	document.$get(this.id).innerHTML = msg?msg:'';

@@ -37,13 +37,18 @@ function $isDate(d){
 Element.prototype.$set = function(name, value, ns){
 	if ($isJSONObject(name)){
 		for (var key in name) {
-			if (value !== undefined) this.setAttributeNS(value, key, name[key]);
+			if (ns !== undefined) this.setAttributeNS(ns, key, name[key]);
 			else this.setAttribute(key, name[key]);
 		}
 	}else{		
 		if (ns !== undefined) this.setAttributeNS(ns, name, value);
 		else this.setAttribute(name, value);
 	}	
+	return this;
+}
+/** Unset an attribute to an Element */
+Element.prototype.$unset = function(name){
+	this.removeAttribute(name);
 	return this;
 }
 /** Append an Element to the Element */

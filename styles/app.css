@@ -97,12 +97,21 @@ input, button{
     top: 12px;
     position: relative;
 }
+.dataType{
+    font-style: italic;
+}
+#slogan{
+    font-style: italic;
+    font-size: 12px;
+    padding: 10px 2px 0 0;
+    float: right;
+}
 #aboutpopup{
     border: 2px solid #953734;
     padding: 20px;
     background: white;
     position: absolute;
-    top: 50px;
+    top: 60px;
     border-radius: 5px;
 }
 #display button{
