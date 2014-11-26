@@ -7,6 +7,7 @@ document.$get('imageclose').addEventListener('click', imageclose, false);
 document.$get('reload').addEventListener('click', reload, false);
 document.$get('about').addEventListener('click', about, false);
 document.$get('bug').addEventListener('click', reportbug, false);
+document.$get('back').addEventListener('click', back, false);
 
 $include('scripts/display.js');
 $include('scripts/ftpclient.js');
@@ -24,7 +25,11 @@ function connect(){
 	document.$get('aboutpopup').$addClass('hidden');
 	document.$get('data').$removeClass('hidden');
 	document.$get('raw').$addClass('hidden');
-	document.$get('error').$addClass('hidden');
+    document.$get('invit').$addClass('hidden');
+    document.$get('wronghost').$addClass('hidden');
+    document.$get('wronguser').$addClass('hidden');
+    document.$get('bugbutton').$addClass('hidden');
+    document.$get('error').$addClass('hidden');
 	document.$get('header').$removeClass('hidden');
 	imageclose();
 	filecancel();
@@ -36,17 +41,8 @@ function connect(){
 function disconnect(){
     document.$get('login').value = '';
     document.$get('password').value = '';
-    document.$get('data').$addClass('hidden');
-    document.$get('header').$addClass('hidden');
-    document.$get('raw').$addClass('hidden');
-    document.$get('error').$addClass('hidden');
-    document.$get('thanks').$addClass('hidden');
-    document.$get('bug').$removeClass('hidden');
-    document.$get('aboutpopup').$addClass('hidden');
-    document.$get('fileopen').$addClass('hidden');
-    document.$get('title').$removeClass('hidden');
-    document.$get('connection').$removeClass('hidden');
     document.$get('viewraw').innerHTML = 'Raw';
+    back();
     ftp.disconnect();
     ftp.reset();
 }
@@ -122,4 +118,15 @@ function unactivebutton(){
 function activebutton(){
     document.$get('viewraw').$unset('disabled');
     document.$get('reload').$unset('disabled');
+}
+function back(){
+    document.$get('data').$addClass('hidden');
+    document.$get('header').$addClass('hidden');
+    document.$get('raw').$addClass('hidden');
+    document.$get('error').$addClass('hidden');
+    document.$get('thanks').$addClass('hidden');
+    document.$get('aboutpopup').$addClass('hidden');
+    document.$get('fileopen').$addClass('hidden');
+    document.$get('title').$removeClass('hidden');
+    document.$get('connection').$removeClass('hidden');
 }

@@ -99,6 +99,7 @@ input, button{
 }
 .dataType{
     font-style: italic;
+    color:darkgray;
 }
 #slogan{
     font-style: italic;
@@ -140,7 +141,7 @@ input, button{
     top: -21px;
 }
 #error{
-    border: 2px solid #F00;
+    border: 2px solid #8B0000;
     padding: 2px;
     font-size: 12px;
 }
@@ -154,11 +155,15 @@ input, button{
     padding: 15px 0;
     font-weight: bold;
 }
-#bugbutton{
+#bugbutton, #backbutton{
     text-align: center;
     padding: 13px;
 }
-#bug{
+#wronghost, #wronguser{
+    font-size: 19px;
+    color: #8B0000;
+}
+#bug, #back{
     padding: 15px;
 }
 .file{

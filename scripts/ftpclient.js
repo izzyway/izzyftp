@@ -25,6 +25,8 @@ function FTPClient(display, host, port, user, password){
 	this.queue = true;
 	this.binaryType = 'string';
 	this.dataType = 'txt';
+	this.message;
+	this.code;
 }
 FTPClient.REPLY_CODES = {
     CONNECTION: {possible:[120, 220, 421], success:[220]},
@@ -248,6 +250,8 @@ FTPClient.prototype._extractCode = function(data){
 	var code = 0;
 	var matches = data.match(/^([0-9]{3}).*/);
 	if (matches && matches.length > 1) code = matches[1];
+	this.message = data;
+	this.code = code;
 	return code;
 }
 FTPClient.prototype._checkCode = function(code, codes, command){
@@ -326,15 +330,28 @@ FTPClient.prototype._disconnected = function(socketName){
 FTPClient.prototype.disconnect = function(socketName){
     this.QUIT();
 }
-FTPClient.prototype._throw = function(msg){
+FTPClient.prototype._throw = function(msg, code){
     this.display.console(msg);
 	this.debug(msg);
 	this.close();
 	unactivebutton();
+	if (msg == 'ConnectionRefusedError'){
+        document.$get('wronghost').$removeClass('hidden');
+        document.$get('message').innerHTML = msg;
+	}else if (this.code == 530){
+	    document.$get('wronguser').$removeClass('hidden');
+	    document.$get('message').innerHTML = this.message;
+	}else{
+	    document.$get('invit').$removeClass('hidden');
+	    document.$get('bugbutton').$removeClass('hidden');
+	    document.$get('message').innerHTML = msg;
+	}
 	document.$get('data').$addClass('hidden');
 	document.$get('raw').$addClass('hidden');
+    document.$get('data').$addClass('hidden');
+    document.$get('fileopen').$addClass('hidden');
+    document.$get('imageopen').$addClass('hidden');
     document.$get('error').$removeClass('hidden');
-    document.$get('message').innerHTML = msg;
 }
 FTPClient.prototype._nextCommand = function(){
 	if (this.currentCommand == null){
