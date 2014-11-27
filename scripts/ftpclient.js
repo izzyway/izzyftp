@@ -27,6 +27,8 @@ function FTPClient(display, host, port, user, password){
 	this.dataType = 'txt';
 	this.message;
 	this.code;
+	this.fileIndex = 0;
+	this.homePath;
 }
 FTPClient.REPLY_CODES = {
     CONNECTION: {possible:[120, 220, 421], success:[220]},
@@ -99,7 +101,7 @@ FTPClient.prototype._received = function(data){
         if (code == FTPClient.CLOSE_DATA_CONNECTION_CODE) {
             this.debug('Data connection close requested');
             if (this.dataSocket) this.dataSocket.close();
-        }else{
+        }else if (this.currentCommand){
             var codes = FTPClient.REPLY_CODES[this.currentCommand.command];
             if (!codes) {
                 this._throw('Unknown command '+this.currentCommand.command);
@@ -130,18 +132,23 @@ FTPClient.prototype._dataReceived = function(data){
     if (this.dataCallback) this.dataCallback.call(this, data);
 }
 FTPClient.prototype._list = function(data){
-    this.data += data;
-    this.display.clear();
-    var index;
-    this.tree[this.path] = [];
-    var temp = this.data;
-    while ((index = temp.indexOf('\n')) > 0){
-        var line = temp.substring(0, index);
-        var file = new File(line);
-        temp = temp.substring(index+1);
-        this.display.add(file);
-        this.tree[this.path].push(file);
-        this.hookFile(file);
+    try{
+        this.data += data;
+        var index;
+        this.tree[this.path] = [];
+        var temp = this.data;
+        while ((index = temp.indexOf('\n')) > 0){
+            var line = temp.substring(0, index);
+            if (this.fileIndex == 0){
+                this.fileIndex = line.lastIndexOf(' ');
+            }
+            var file = new File(line, this.fileIndex);
+            temp = temp.substring(index+1);
+            this.tree[this.path].push(file);
+        }
+        this._displayFolder(this.tree[this.path]);
+    }catch(e){
+        this._throw(e);
     }
 }
 FTPClient.prototype._retr = function(data){
@@ -215,20 +222,38 @@ FTPClient.prototype._sendTextData = function(){
 }
 FTPClient.prototype.openFolder=function(file){
     this.debug('Open folder '+file.name);
-    this.TYPE('A');
-    this.CWD(file.name);
     this.display.clear('Loading...');
     this._changePath(file.name);
     var files = this.tree[this.path];
     if (files){
-        this.display.clear();
-        for (var index = 0; index < files.length; index++){
-            var file = files[index];
+        this._displayFolder(files);
+    }else{
+        this._displayFolder([]);
+        this.TYPE('A');
+        this.CWD(file.name);
+        this.LIST();
+    }
+}
+FTPClient.prototype._displayFolder=function(files){
+    this.display.clear();
+    var hasBack = false;
+    for (var index = 0; index < files.length; index++){
+        var file = files[index];
+        if (file.type == 'FOLDER' && file.name == '..') {
+            hasBack = true;
+            break;
+        }
+    }
+    if (!hasBack && this.path != this.homePath){
+        this.display.add(File.BACK);
+        this.hookFile(File.BACK);
+    }
+    for (var index = 0; index < files.length; index++){
+        var file = files[index];
+        if (file.name != '..' || file.type != 'FOLDER' || this.path != this.homePath){
             this.display.add(file);
             this.hookFile(file);
         }
-    }else{
-        this.LIST();
     }
 }
 FTPClient.prototype.reload = function(){
@@ -237,8 +262,10 @@ FTPClient.prototype.reload = function(){
 FTPClient.prototype._changePath = function(folder){
     if (folder != '.'){
         if (folder == '..') {
-            var index = this.path.lastIndexOf('/', this.path.length);
-            this.path = this.path.substring(0, index);
+            if (this.path != this.homePath){
+                var index = this.path.lastIndexOf('/', this.path.length);
+                this.path = this.path.substring(0, index);
+            }
         }else{
             if (this.path.substring(this.path - 1) == '/') this.path += folder;
             else this.path += '/' + folder;
@@ -267,6 +294,7 @@ FTPClient.prototype._parsePWDReply = function(reply){
     var matches = reply.match(/^257 [\'\"]?([^ \'\"]+).*/);
     if (matches && matches.length > 1){
         this.path = matches[1];
+        if (!this.homePath) this.homePath = this.path;
         this.debug('Path = '+this.path);
         this.display.path(this.path);
     }else this._throw('Cannot parse path '+reply);
@@ -385,6 +413,7 @@ FTPClient.prototype.command = function(command){
 }
 FTPClient.prototype.LIST = function(){
     var instance = this;
+    this.fileIndex = 0;
     this.data = '';
     this.dataType = 'list';
     this.PASV();

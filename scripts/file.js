@@ -2,19 +2,22 @@ $required(IzzyObject, "IzzyObject");
 
 var __FILE_ID_GENERATOR = 0;
 
-function File(line){
+function File(line, nameIndex){
 	IzzyObject.call(this);
 	this.id = 'f'+__FILE_ID_GENERATOR++;
-	this._parse(line);	
+	if (line) this._parse(line, nameIndex);
 }
 
 File.prototype = Object.create(IzzyObject.prototype);
 File.prototype.constructor = File;
 File.UNITS = ['', 'K', 'M', 'G', 'T'];
+File.BACK = new File(); File.BACK.name='..'; File.BACK.type='FOLDER';
 
-File.prototype._parse = function(line){
-	var matches = line.match(/([dsl-]{1})([a-zA-Z-]{9})[\t ]+([0-9]+)[\t ]+([^\t ]+)[\t ]+([^\t ]+)[\t ]+([0-9]+)[\t ]+(.+)[\t ]+(.+)/);
-	if (matches && matches.length == 9) {
+File.prototype._parse = function(line, nameIndex){
+    this.name = line.substring(nameIndex + 1, line.length).trim();
+    line = line.substring(0, nameIndex);
+	var matches = line.match(/([dsl-]{1})([a-zA-Z-]{9})[\t ]+([0-9]+)[\t ]+([^\t ]+)[\t ]+([^\t ]+)[\t ]+([0-9]+)[\t ]+(.+)[\t ]*/);
+	if (matches && matches.length == 8) {
 		switch(matches[1]){
 			case 'l': this.type = 'LINK'; break;
 			case 'd': this.type = 'FOLDER'; break;
@@ -27,11 +30,10 @@ File.prototype._parse = function(line){
 		this.group = matches[5];
 		this.size = matches[6];
 		this.lastModified = matches[7];
-		this.name = matches[8];
 		var index = this.name.lastIndexOf('.')
-        if (index >= 0 && index < this.name.length) this.ext = this.name.substring(index + 1).toLowerCase();
+        if (this.type == 'FILE' && index >= 0 && index < this.name.length) this.ext = this.name.substring(index + 1).toLowerCase();
         else this.ext = '';
-		this.debug('Name: '+this.name+' size: '+this.size);
+		this.debug(this.type+(this.ext!=''?' ('+this.ext+')':'')+': "'+this.name+'" size: '+this.size);
 	}else throw 'Malformed file information line: '+line;
 }
 File.prototype.getPrettySize = function(){
@@ -68,6 +70,7 @@ File.prototype.getClassNames = function(){
         else if (this.ext == 'log') className = 'file text log';
         else if (this.ext == 'sh') className = 'file text shell';
         else if (this.ext == 'pdf') className = 'file pdf';
+		else if (this.ext == 'java') className = 'file text java';
         else if (this.ext == 'sql') className = 'file text sql';
         else if (this.ext == 'htaccess') className = 'file text htaccess';
         else if (this.ext == 'md') className = 'file text markdown';

@@ -33,7 +33,7 @@ Display.prototype.clearAll = function (){
 	document.$get(this.rawId).innerHTML = '';
 }
 Display.prototype.add = function(file){
-    if (file.name != '.'){
+    if (file.type != 'FOLDER' || file.name != '.'){
         var zclass = file.getClassNames();
         var size = file.getPrettySize();
         if (size != '') size = ' ('+size+')';
