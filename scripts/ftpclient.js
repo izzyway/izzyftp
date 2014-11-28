@@ -230,7 +230,7 @@ FTPClient.prototype.openFolder=function(file){
     }else{
         this._displayFolder([]);
         this.TYPE('A');
-        this.CWD(file.name);
+        this.CWD(this.path);
         this.LIST();
     }
 }
@@ -270,6 +270,7 @@ FTPClient.prototype._changePath = function(folder){
             if (this.path.substring(this.path - 1) == '/') this.path += folder;
             else this.path += '/' + folder;
         }
+        if (this.path == '') this.path = '/';
         this.display.path(this.path);
     }
 }

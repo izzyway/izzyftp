@@ -1,5 +1,5 @@
 {
-	"version": "0.4.1",
+	"version": "0.4.6",
 	"name": "izzy FTP",
 	"description": "FTP client",
 	"type": "privileged",
