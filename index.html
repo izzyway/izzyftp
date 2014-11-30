@@ -1,17 +1,64 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
-	<title>izzy FTP</title>
-	
-	<link href="styles/app.css" rel="stylesheet" type="text/css">
-	
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>izzy FTP</title>
+
+    <link href="styles/izzyftp.css" rel="stylesheet" type="text/css">
+
 </head>
 <body>
-<div id = "content">
+<div id ="display" class = "hidden">
+    <div id = "logo"></div>
+    <div id = "screen">
+    </div>
+    <div id = "raw">
+    </div>
+    <div id = "file">
+        <div id = "buttons">
+            <button id="close" class = "button">Close</button>
+            <button id="save" class = "button">Save</button>
+            <button id="fit" class = "button"></button>
+        </div>
+        <div id = "content">
+
+        </div>
+    </div>
+    <div id = "bar">
+        <div id = "icon" class = "disconnected"></div>
+        <div id = "info">
+            <span id = "label"></span>
+            <progress id = "progress" max = "100"></progress>
+        </div>
+    <button id = "menu"></button>
+    </div>
+    <!-- ERROR POPUP -->
+    <div id = "errorpopup">
+        <div id = "errormsg"></div>
+        <div id = "errordetail"></div>
+        <div id = "errorbutton">
+            <button id="back" class = "button">Back to connection</button>
+            <button id="report" class = "button">Report error (anonymously)</button>
+        </div>
+    </div>
+    <!-- ABOUT POPUP -->
+    <div id = "aboutpopup">
+        izzy FTP 0.5 by
+        <a href = "http://izzyway.com/" target = "_blank">izzyway.com</a>
+        <div id = "slogan">Tech'it izzy</div>
+    </div>
+    <!-- MENU -->
+    <div id = "menupopup">
+        <button id="viewraw" class = "button"></button>
+        <button id="reload" class = "button">Reload</button>
+        <button id = "about">About</button>
+        <button id = "disconnect">Disconnect</button>
+    </div>
+</div>
+
+<div id = "connection">
     <h1 id = "title">izzy FTP</h1>
-    <div id = "connection">
         <div>
             <p>Host:</p>
             <input name = "host" id = "host" type = "text" value = "" />
@@ -31,52 +78,11 @@
         <div id = "connectbutton">
             <button id="connect" class = "button">Connect</button>
         </div>
-    </div>
-    <div id = "header" class = "hidden">
-        <img id = "connected" />
-        <button id="viewraw" class = "button">Raw</button>
-        <button id="reload" class = "button">Refresh</button>
-        <button id="disconnect" class = "button">Disconnect</button>
-        <button id="about" class = "button">?</button>
-    </div>
-    <div id = "data" class = "hidden">
-        <div id = "path"></div>
-        <div id = "display"></div>
-    </div>
-    <div class = "hidden" id = "error">
-        Unexpected error:
-        <div id = "message"></div>
-        <div id="invit">Please report this error to improve the izzy FTP</div>
-        <div id="wronghost">Please verify your host and port</div>
-        <div id="wronguser">Please verify your credencials</div>
-        <div id = "bugbutton"><button id="bug">Report the error (anonymously)</button></div>
-        <div id = "backbutton"><button id="back">Back to connection page</button></div>
-        <div id ="thanks" class = "hidden"></div>
-    </div>
-    <div class = "hidden" id = "raw"></div>
-    <div class = "hidden" id = "fileopen">
-        <span id = "filename"></span>
-        <textarea id = "filecontent"></textarea>
-        <button id="filecancel" class = "button">Close</button>
-        <button id="filesave" class = "button">Save</button>
-        <span id = "fileinfo"></span>
-    </div>
-    <div class = "hidden" id = "imageopen">
-        <span id = "imagename"></span>
-        <div id = "image"></div>
-        <button id="imageclose" class = "button">Close</button>
-    </div>
-    <div class = "hidden" id = "aboutpopup">izzy FTP 0.4.6 by
-        <a href = "http://izzyway.com/" target = "_blank">izzyway.com</a>
-        <div id = "slogan">Tech'it izzy</div>
-    </div>
-</div>	
-
-<!-- Below is your custom application script -->
+</div>
 
 <script src="scripts/izzycore.js"></script>
 <script src="scripts/izzyobject.js"></script>
-<script src="scripts/app.js"></script>
-	
+<script src="scripts/izzyftp.js"></script>
+
 </body>
 </html>

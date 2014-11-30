@@ -1,21 +1,25 @@
 $required(IzzyObject, "IzzyObject");
 
-var __FILE_ID_GENERATOR = 0;
-
-function File(line, nameIndex){
+function File(line){
 	IzzyObject.call(this);
-	this.id = 'f'+__FILE_ID_GENERATOR++;
-	if (line) this._parse(line, nameIndex);
+	if (line) this._parse(line);
 }
 
 File.prototype = Object.create(IzzyObject.prototype);
 File.prototype.constructor = File;
 File.UNITS = ['', 'K', 'M', 'G', 'T'];
 File.BACK = new File(); File.BACK.name='..'; File.BACK.type='FOLDER';
+File.nameIndex = 45;
 
-File.prototype._parse = function(line, nameIndex){
-    this.name = line.substring(nameIndex + 1, line.length).trim();
-    line = line.substring(0, nameIndex);
+File.prototype._parse = function(line){
+    var i = File.nameIndex;
+    if (line > i && (line[i]==' ' || line[i] == '\t')){
+        this.name = line.substring(i + 1).trim();
+    } else {
+        i = line.lastIndexOf(' ');
+        this.name = line.substring(i).trim();
+    }
+    line = line.substring(0, i);
 	var matches = line.match(/([dsl-]{1})([a-zA-Z-]{9})[\t ]+([0-9]+)[\t ]+([^\t ]+)[\t ]+([^\t ]+)[\t ]+([0-9]+)[\t ]+(.+)[\t ]*/);
 	if (matches && matches.length == 8) {
 		switch(matches[1]){

@@ -1,0 +1,301 @@
+/** GENERAL */
+.hidden{
+    display: none;
+}
+html{
+    padding: 0;
+    margin: 0;
+    font-family: arial;
+    font-size: 16px;
+}
+input{
+    font-size: 16px;
+    width: 100%;
+    -webkit-box-sizing : border-box;‌​
+    -moz-box-sizing : border-box;
+    box-sizing : border-box;
+}
+body{
+	padding: 0 0 40px 0;
+	margin: 0;
+}
+/** WORKING SCREEN */
+#screen{
+	overflow-x: hidden;
+	overflow-y: scroll;
+	width: 100%;
+	height: 100%;
+}
+#raw{
+ 	width: 100%;
+ 	height: 100%;
+ }
+#logo{
+	opacity: 0.2;
+	width: 100px;
+	height: 100px;
+	position: fixed;
+	top: 5px;
+	left: 5px;
+	background: url('../app-icons/icon-48.png') no-repeat top left;
+}
+#screen div{
+	white-space: nowrap;
+}
+.filerow{
+    height: 44px;
+    padding: 5px 0;
+    border-bottom: 1px dotted lightgray;
+}
+.clickable{
+    cursor: pointer;
+}
+.unclickable{
+    background: #F2F2F2;
+}
+.filerow span{
+    top: 12px;
+    left: 5px;
+    position: relative;
+}
+.command{
+	color: #008000;
+}
+.output, .file{
+	color: #0000C0;
+}
+.input, .console, .command, .data, .output{
+	padding: 2px 0px;
+	font-family: courier;
+    font-size: 12px;
+    white-space:pre;
+}
+.file, .folder{
+    padding: 0px 0px 5px 25px;
+	color: #0000C0;
+}
+textarea{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background: transparent;
+}
+/** CONNECTION SCREEN */
+#connection h1{
+    padding: 0px 0px 10px 50px;
+    line-height: 0;
+}
+#connection{
+    padding: 20px;
+    background: url('../app-icons/icon-48.png') no-repeat 5px 5px white;
+    position: absolute;
+    top: 0;
+}
+#connection p{
+    padding: 10px 0 0 0;
+    line-height: 0;
+}
+#connection button{
+    font-size: 20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+#connectbutton{
+    text-align: center;
+    width: 100%;
+    padding: 20px 0;
+}
+/** MENU */
+#menupopup{
+    position: fixed;
+    right: 0px;
+    bottom: 40px;
+    border: 1px solid darkgray;
+    padding: 2px;
+    width: 160px;
+}
+#menupopup button{
+    height: 40px;
+    width: 100%;
+    color: white;
+    margin: 2px 0px;
+}
+#about{
+    background: #B052A5;
+}
+#disconnect{
+    background: #AD4747;
+}
+#viewraw{
+    background: #419C46;
+}
+#reload{
+     background: #469DA1;
+ }
+ /** FILE CONTENT */
+ #buttons{
+    height: 33px;
+ }
+#close, #save, #fit{
+    height: 30px;
+    width: 100px;
+    color: white;
+    margin: 2px 0px;
+    float: right;
+    margin: 1px 2px;
+}
+#save{
+     background: #A2AA5A;
+}
+#close{
+     background: #B04870;
+}
+#fit{
+    background: #6C098A;
+}
+.fitted{
+    width: 100%;
+}
+/** ERROR */
+#errorpopup{
+    border: 2px solid #953734;
+    padding: 20px;
+    background: white;
+    position: fixed;
+    top: 60px;
+    border-radius: 5px;
+    width: 70%;
+    margin: 70px 10%;
+    text-align: center;
+}
+#errorpopup button{
+    margin: 16px 0 0 0;
+    height: 40px;
+    color: white;
+}
+#errordetail{
+    font-weight: bold;
+}
+#back{
+    background: #36B349;
+}
+#report{
+    background: #3B55A2;
+}
+/** ABOUT */
+#aboutpopup{
+    border: 2px solid #953734;
+    padding: 20px;
+    background: white;
+    position: fixed;
+    top: 60px;
+    border-radius: 5px;
+    width: 70%;
+    margin: 70px 10%;
+}
+#slogan{
+    width: 100%;
+    text-align: right;
+    padding: 15px 15px 0px 15px;
+}
+/** BAR */
+#info{
+    position: absolute;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    height: 40px;
+    left: 45px;
+    right: 42px;
+}
+#progress::-moz-progress-bar {
+    background: lightgray;
+}
+#progress{
+    background: #A9A9A9;
+    border: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    height: 100%;
+    padding: 0;
+}
+#label{
+    position: absolute;
+    top: 9px;
+    left: 5px;
+    right: 0px;
+    z-index: 10;
+    overflow: hidden;
+    white-space: nowrap;
+    direction: rtl;
+    text-align: left;
+}
+#bar{
+	height: 40px;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	background: lightgray;
+}
+#menu{
+	background: url('../app-icons/color_swatch.png') no-repeat center white;
+	height: 30px;
+	width: 30px;
+	float: right;
+	margin: 5px 5px 0 0;
+}
+#icon{
+	height: 30px;
+	width: 30px;
+	float: left;
+	margin: 3px 0px 0 2px;
+}
+.connected{
+    background: url('../app-icons/connect.png') no-repeat center;
+}
+.disconnected{
+    background: url('../app-icons/disconnect.png') no-repeat center;
+}
+/** FILE TYPE */
+.file{
+    background: url('../app-icons/page_white.png') no-repeat top left;
+}
+.text{
+    background: url('../app-icons/page_white_text.png') no-repeat top left;
+}
+.xml{
+    background: url('../app-icons/page_white_code.png') no-repeat top left;
+}
+.php{
+    background: url('../app-icons/page_white_php.png') no-repeat top left;
+}
+.image{
+    background: url('../app-icons/picture.png') no-repeat top left;
+}
+.html{
+    background: url('../app-icons/html.png') no-repeat top left;
+}
+.compress{
+    background: url('../app-icons/compress.png') no-repeat top left;
+}
+.folder{
+    background: url('../app-icons/folder.png') no-repeat top left;
+}
+.music{
+    background: url('../app-icons/music.png') no-repeat top left;
+}
+.css{
+    background: url('../app-icons/css.png') no-repeat top left;
+}
+.word{
+    background: url('../app-icons/page_word.png') no-repeat top left;
+}
+.excel{
+    background: url('../app-icons/page_excel.png') no-repeat top left;
+}
+.pdf{
+    background: url('../app-icons/page_white_acrobat.png') no-repeat top left;
+}

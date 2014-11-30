@@ -55,17 +55,25 @@ Socket.prototype._close = function(evt){
 	this.connected = false;
 	if (this._onclose) this._onclose.call(this);
 }
-Socket.prototype._send = function(){
+Socket.prototype._send = function(watcher){
+    var length = this.buffer.length;
 	while (this.buffer.length > 0){
 		var char = this.buffer.slice(0, 1);
 		this.buffer = this.buffer.slice(1);
+		if (watcher && $isFunction(watcher.sending)){
+		    try{
+		        watcher.sending.call(watcher, Math.round(100*(length - this.buffer.length)/length));
+		    }catch(e){
+		        this.debug(e);
+		    }
+		}
 		if (!this.connected || !this.socket.send(char)) break;
 	}
 }
-Socket.prototype.send = function(data){
+Socket.prototype.send = function(data, watcher){
 	this.debug('Send data to '+this.host+':'+this.port);
 	this.buffer += data;
-	this._send();
+	this._send(watcher);
 }
 Socket.prototype.onreceived = function(fct){
 	this._onreceived = fct;
