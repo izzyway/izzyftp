@@ -88,8 +88,10 @@ function fit(){
     var img = document.$get('img');
     if (img.$hasClass('fitted')){
         img.$removeClass('fitted');
+        document.$get('fit').innerHTML = 'Fit';
     }else{
         img.$addClass('fitted')
+        document.$get('fit').innerHTML = 'Unfit';
     }
 }
 function report(){
