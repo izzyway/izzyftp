@@ -86,7 +86,7 @@ textarea{
     line-height: 0;
 }
 #connection{
-    padding: 20px;
+    padding: 10px 20px;
     background: url('../app-icons/icon-48.png') no-repeat 5px 5px white;
     position: absolute;
     top: 0;
@@ -114,6 +114,7 @@ textarea{
     border: 1px solid darkgray;
     padding: 2px;
     width: 160px;
+    background: white;
 }
 #menupopup button{
     height: 40px;
@@ -298,4 +299,8 @@ textarea{
 }
 .pdf{
     background: url('../app-icons/page_white_acrobat.png') no-repeat top left;
+}
+.dataType{
+    color: darkgray;
+    font-style: italic;
 }

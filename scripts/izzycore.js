@@ -170,6 +170,13 @@ function $stringify(o){
 	}	
 	return str;
 }
+function $inline(i){
+    var str = $stringify(i);
+    str = str.replace(/\n/g, '\\n');
+    str = str.replace(/\r/g, '\\r');
+    str = str.replace(/\t/g, '\\t');
+    return str;
+}
 
 function $base64(input) {
     var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
