@@ -8,12 +8,11 @@ function Socket(host, port, options){
 	this.host = host;
 	this.port = port;
 	this.options = (typeof options === undefined)?DEFAULT_OPTIONS:options;
-    this.connect();
+  this.connect();
 	this._onreceived = options.received;
 	this._onerror = options.error;
 	this._onclose = options.close;
-
-	this.buffer = '';
+	this.scope = {};
 
 }
 
@@ -30,7 +29,7 @@ Socket.prototype._initSocket = function(socket){
 	var instance = this;
 	this.socket = socket;
 	this.socket.ondata = function(evt){instance._received(evt);}
-	this.socket.ondrain = function(){instance._send();}
+	this.socket.ondrain = function(){instance._drain();}
 	this.socket.onerror = function(evt){instance._error(evt);}
 	this.socket.onclose = function(evt){instance._close(evt);}
 	return this.socket;
@@ -55,25 +54,35 @@ Socket.prototype._close = function(evt){
 	this.connected = false;
 	if (this._onclose) this._onclose.call(this);
 }
-Socket.prototype._send = function(watcher){
-    var length = this.buffer.length;
-	while (this.buffer.length > 0){
-		var char = this.buffer.slice(0, 1);
-		this.buffer = this.buffer.slice(1);
-		if (watcher && $isFunction(watcher.sending)){
-		    try{
-		        watcher.sending.call(watcher, Math.round(100*(length - this.buffer.length)/length));
-		    }catch(e){
-		        this.debug(e);
-		    }
-		}
-		if (!this.connected || !this.socket.send(char)) break;
-	}
+Socket.prototype._drain = function(){
+	this._send();
+}
+Socket.prototype._send = function(){
+	var data = this.scope.data;
+	if (data){
+		var length = this._length(this.scope.data);
+		var watcher = this.scope.watcher;
+		if (length > 0){
+			while (this.scope.index < this.scope.length){
+				var full = !this.socket.send(this.scope.data, this.scope.index);
+				this.scope.index += this.socket.bufferedAmount;
+				if (!this.connected || full){								
+					break
+				} 
+			}
+			length = this._length(data) - this.scope.index;
+		  if (this.scope.length > 0) watcher.sending.call(watcher, Math.round(100 * (this.scope.length-length)/this.scope.length));
+		}else watcher.sending.call(watcher, 100);		
+	}else this.debug('Try to send no data');
 }
 Socket.prototype.send = function(data, watcher){
-	this.debug('Send data to '+this.host+':'+this.port);
-	this.buffer += data;
-	this._send(watcher);
+	var length = this._length(data);
+	this.debug('Send data to '+this.host+':'+this.port+' ('+length+')');
+	this.scope.watcher = watcher;
+	this.scope.length = length;
+	this.scope.data = data;
+	this.scope.index = 0;
+	this._send();	
 }
 Socket.prototype.onreceived = function(fct){
 	this._onreceived = fct;
@@ -93,4 +102,6 @@ Socket.prototype.close = function(){
 	this.connected = false;
 	this.socket = null;
 }
-
+Socket.prototype._length = function(data){
+	return (typeof data.length !== 'undefined')?data.length:data.byteLength;
+}

@@ -9,11 +9,16 @@ document.$get('close').addEventListener('click', close, false);
 document.$get('fit').addEventListener('click', fit, false);
 document.$get('back').addEventListener('click', back, false);
 document.$get('report').addEventListener('click', report, false);
+document.$get('upload').addEventListener('click', upload, false);
+document.$get('uploadclose').addEventListener('click', uploadClose, false);
+document.$get('uploadaction').addEventListener('click', uploadFile, false);
 
 $include('scripts/display.js');
 $include('scripts/ftpclient.js');
 
 var ftp;
+var display;
+var file;
 
 function menu(){
     var menu = document.$get('menupopup');
@@ -30,11 +35,12 @@ function connect(){
     document.$get('display').$removeClass('hidden');
     document.$get('viewraw').innerHTML = 'View raw';
     document.$get('raw').$addClass('hidden');
+    document.$get('uploadpopup').$addClass('hidden');
     var host = document.$get('host').value;
     var port = document.$get('port').value;
     var login = document.$get('login').value;
     var password = document.$get('password').value;
-	var display = new Display();
+	display = new Display();
     display.clearAll();
 	ftp = new FTPClient(display, host, port, login, password);
 	ftp.connect();
@@ -77,7 +83,7 @@ function reload(){
     menu();
 }
 function save(){
-    ftp.saveFile(document.$get('filecontent').value);
+    ftp.saveTextFile(document.$get('filecontent').value);
 }
 function close(){
     document.$get('file').$addClass('hidden');
@@ -107,4 +113,40 @@ function report(){
             success: function(data, code){$log(data);document.$get('thanks').$removeClass('hidden').innerHTML='Thanks'; document.$get('bug').$addClass('hidden'); },
             error: function(data, code){document.$get('thanks').$removeClass('hidden').innerHTML='Error code '+code; document.$get('bug').$addClass('hidden'); }
         });
+}
+function upload(){
+    file = null;
+    var pickImageActivity = new MozActivity({name: "pick", data: {type: ["image/*"]}});
+    pickImageActivity.onsuccess = function() {
+        file = this.result.blob;
+        $log("Pick the file "+file.name);
+        document.$get('uploadfile').value = file.name + ' (' +File.formatSize(file.size) + ')';
+        document.$get('uploadname').value = file.name;
+        document.$get('uploaddirectory').value = ftp.path;
+        document.$get('menupopup').$addClass('hidden');
+        document.$get('uploadpopup').$removeClass('hidden');
+    };
+    pickImageActivity.onerror = function() {
+        $log(this.result);
+    };
+}
+function uploadClose(){
+    document.$get('uploadpopup').$addClass('hidden');
+}
+function uploadFile(){
+    if (file && ftp){
+        var fileDirectory = document.$get('uploaddirectory').value;
+        var fileName = document.$get('uploadname').value;
+        if (fileDirectory != ftp.path){
+            try{             
+                ftp.CWD(fileDirectory);  
+            }catch(e){
+                this.debug('Directory doesn\'t exists?');
+                ftp.MKDIR(fileDirectory);  
+                ftp.CWD(fileDirectory);
+            }
+        } 
+        ftp.uploadFile(fileName, file);
+    }
+    uploadClose();
 }

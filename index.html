@@ -44,12 +44,23 @@
     </div>
     <!-- ABOUT POPUP -->
     <div id = "aboutpopup">
-        izzy FTP 0.5.1 by
+        izzy FTP 0.6 by
         <a href = "http://izzyway.com/" target = "_blank">izzyway.com</a>
         <div id = "slogan">Tech'it izzy</div>
     </div>
+    <!-- UPLOAD POPUP -->
+    <div id = "uploadpopup">
+        <div>Image: <input type = "text" id = "uploadfile" disabled = "disabled" /></div>
+        <div>Target directory: <input type = "text" id = "uploaddirectory" /></div>
+        <div>Target filename:  <input type = "text" id = "uploadname" /></div>
+        <div id = "uploadbutton">
+            <button id = "uploadaction">Upload</button>
+            <button id = "uploadclose">Close</button>
+        </div>
+    </div>
     <!-- MENU -->
     <div id = "menupopup">
+        <button id="upload" class = "button">Upload an image</button>
         <button id="viewraw" class = "button"></button>
         <button id="reload" class = "button">Reload</button>
         <button id = "about">About</button>

@@ -13,10 +13,11 @@ File.nameIndex = 45;
 
 File.prototype._parse = function(line){
     var i = File.nameIndex;
-    if (line > i && (line[i]==' ' || line[i] == '\t')){
+    if (line.length > i && (line[i]==' ' || line[i] == '\t')){
         this.name = line.substring(i + 1).trim();
     } else {
-        i = line.lastIndexOf(' ');
+        if (i + 2 < line.length) i = line.indexOf(' ', i);
+        else i = line.lastIndexOf(' ');
         this.name = line.substring(i).trim();
     }
     line = line.substring(0, i);
@@ -42,22 +43,29 @@ File.prototype._parse = function(line){
 }
 File.prototype.getPrettySize = function(){
     if (this.size && this.type == 'FILE'){
-        if (this.size == '0') return '0';
-        var index = 0;
-        var size = this.size;
-        while (size > 1024 && index < File.UNITS.length) {
-            size /= 1024;
-            index++;
-        }
-        var str = new String(Math.round(size * 100));
-        var trunc = str.substring(0, str.length-2);
-        var dec = str.substring(str.length-2);
-        if (dec == '00') dec = '';
-        else if (dec[1] == '0') dec = '.' + dec[0];
-        else dec = '.'+dec;
-        return trunc + dec + File.UNITS[index];
+        return File.formatSize(this.size);
     }
     return '';
+}
+File.formatSize = function(size){
+    if (size == '0') return '0';
+    var index = 0;
+    while (size > 1024 && index < File.UNITS.length) {
+        size /= 1024;
+        index++;
+    }
+    var str = new String(Math.round(size * 100));
+    var trunc = str.substring(0, str.length-2);
+    var dec = str.substring(str.length-2);
+    if (dec == '00') dec = '';
+    else if (dec[1] == '0') dec = '.' + dec[0];
+    else dec = '.'+dec;
+    return trunc + dec + File.UNITS[index];
+}
+File.prototype.getPrettyName = function(){
+      var size = this.getPrettySize();
+      if (size != '') size = ' ('+size+')';
+      return this.name + size;
 }
 File.prototype.getClassNames = function(){
     if (this.type == 'FILE'){

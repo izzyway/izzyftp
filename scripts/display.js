@@ -91,11 +91,9 @@ Display.prototype.add = function(file){
     if (file.type != 'FOLDER' || file.name != '.'){
         var ftp = this.client;
         var zclass = file.getClassNames();
-        var size = file.getPrettySize();
-        if (size != '') size = ' ('+size+')';
         var main = $new('div').$set({'class':'filerow'});
         document.$get('screen').$append(main);
-        main.$append($new('span', file.name + size).$set({'class':zclass}));
+        main.$append($new('span', file.getPrettyName()).$set({'class':zclass}));
         if (file.type == 'FILE'){
             if (zclass.indexOf('text')>=0){
                     main.onclick = function(){ftp.openTextFile(file)};
