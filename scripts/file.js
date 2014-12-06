@@ -9,20 +9,10 @@ File.prototype = Object.create(IzzyObject.prototype);
 File.prototype.constructor = File;
 File.UNITS = ['', 'K', 'M', 'G', 'T'];
 File.BACK = new File(); File.BACK.name='..'; File.BACK.type='FOLDER';
-File.nameIndex = 45;
 
 File.prototype._parse = function(line){
-    var i = File.nameIndex;
-    if (line.length > i && (line[i]==' ' || line[i] == '\t')){
-        this.name = line.substring(i + 1).trim();
-    } else {
-        if (i + 2 < line.length) i = line.indexOf(' ', i);
-        else i = line.lastIndexOf(' ');
-        this.name = line.substring(i).trim();
-    }
-    line = line.substring(0, i);
-	var matches = line.match(/([dsl-]{1})([a-zA-Z-]{9})[\t ]+([0-9]+)[\t ]+([^\t ]+)[\t ]+([^\t ]+)[\t ]+([0-9]+)[\t ]+(.+)[\t ]*/);
-	if (matches && matches.length == 8) {
+    var matches = line.match(/([dsl-]{1})([a-zA-Z-]{9})[\t ]+([0-9]+)[\t ]+([^\t ]+)[\t ]+([^\t ]+)[\t ]+([0-9]+)[\t ]+(.+)/);
+    if (matches && matches.length == 8) {
 		switch(matches[1]){
 			case 'l': this.type = 'LINK'; break;
 			case 'd': this.type = 'FOLDER'; break;
@@ -34,7 +24,10 @@ File.prototype._parse = function(line){
 		this.owner = matches[4];
 		this.group = matches[5];
 		this.size = matches[6];
-		this.lastModified = matches[7];
+    var dateMatches = matches[7].match(/([A-Za-z]{3}[ ]{1,2}[0-9]{1,2}[ ]{1,2}[0-9:]{4,5})[ \t]+.*/);
+    if (dateMatches && dateMatches.length>1) this.lastModified = dateMatches[1].trim();
+    else throw 'Malformed file information line: '+line+' impossible to extract the name from '+matches[7]; 
+    this.name = matches[7].substring(this.lastModified.length).trim();    
 		var index = this.name.lastIndexOf('.')
         if (this.type == 'FILE' && index >= 0 && index < this.name.length) this.ext = this.name.substring(index + 1).toLowerCase();
         else this.ext = '';

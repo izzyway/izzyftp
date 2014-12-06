@@ -144,6 +144,7 @@ textarea{
     padding: 2px;
     width: 160px;
     background: white;
+    z-index: 15;
 }
 #menupopup button{
     height: 40px;
@@ -201,6 +202,7 @@ textarea{
     width: 70%;
     margin: 70px 10%;
     text-align: center;
+    z-index: 12;
 }
 #errorpopup button{
     margin: 16px 0 0 0;
@@ -226,6 +228,7 @@ textarea{
     border-radius: 5px;
     width: 70%;
     margin: 70px 10%;
+    z-index: 16;
 }
 #slogan{
     width: 100%;
