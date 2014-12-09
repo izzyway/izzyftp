@@ -12,6 +12,7 @@ document.$get('report').addEventListener('click', report, false);
 document.$get('upload').addEventListener('click', upload, false);
 document.$get('uploadclose').addEventListener('click', uploadClose, false);
 document.$get('uploadaction').addEventListener('click', uploadFile, false);
+document.$get('new').addEventListener('click', newFile, false);
 
 $include('scripts/display.js');
 $include('scripts/ftpclient.js');
@@ -138,15 +139,24 @@ function uploadFile(){
         var fileDirectory = document.$get('uploaddirectory').value;
         var fileName = document.$get('uploadname').value;
         if (fileDirectory != ftp.path){
-            try{             
-                ftp.CWD(fileDirectory);  
-            }catch(e){
-                this.debug('Directory doesn\'t exists?');
-                ftp.MKDIR(fileDirectory);  
-                ftp.CWD(fileDirectory);
-            }
-        } 
-        ftp.uploadFile(fileName, file);
+            ftp.catch(
+                function(){
+                    ftp.CWD(fileDirectory);
+                },
+                function(){
+                    ftp.debug('Directory doesn\'t exists?');
+                    ftp.MKD(fileDirectory);  
+                });
+                ftp.uploadFile(fileName, file);
+        }else{
+           ftp.uploadFile(fileName, file);
+        }
     }
     uploadClose();
+}
+function newFile(){
+    document.$get('uploadpopup').$addClass('hidden');
+    document.$get('aboutpopup').$addClass('hidden');
+    document.$get('errorpopup').$addClass('hidden');
+    document.$get('newfilepopup').$removeClass('hidden');
 }

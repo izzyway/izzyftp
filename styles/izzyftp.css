@@ -32,7 +32,7 @@ body{
     z-index: 11;
 }
 #uploadpopup div{
-    margin: 0px 0px 20px 0px;
+    margin: 0px 0px 10px 0px;
 }
 #uploadbutton{
     text-align: center;
@@ -167,6 +167,9 @@ textarea{
  #upload{
       background: #2042D5;
   }
+#new{
+    background: #C6C624;
+}
 /** FILE CONTENT */
  #buttons{
     height: 33px;
