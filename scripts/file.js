@@ -32,7 +32,7 @@ File.prototype._parse = function(line){
         if (this.type == 'FILE' && index >= 0 && index < this.name.length) this.ext = this.name.substring(index + 1).toLowerCase();
         else this.ext = '';
 		this.debug(this.type+(this.ext!=''?' ('+this.ext+')':'')+': "'+this.name+'" size: '+this.size);
-	}else throw 'Malformed file information line: '+line;
+	}else this.info('Malformed file information line: '+line);
 }
 File.prototype.getPrettySize = function(){
     if (this.size && this.type == 'FILE'){
@@ -81,7 +81,7 @@ File.prototype.getClassNames = function(){
         else if (this.ext == 'md') className = 'file text markdown';
         else if (this.ext == 'doc' || this.ext == 'docx') className = 'file word';
         else if (this.ext == 'ppt') className = 'file powerpoint';
-        else if (this.ext == 'zip' || this.ext == 'war' || this.ext =='rar' || this.ext =='tar'|| this.ext =='bz2') className = 'file compressed';
+        else if (this.ext == 'zip' || this.ext == 'war' || this.ext =='rar' || this.ext =='tar'|| this.ext =='bz2') className = 'file compress';
         else if (this.ext == 'png' || this.ext == 'gif' || this.ext =='jpg' || this.ext =='bmp' || this.ext == 'jpeg') className = 'file image';
         else if (this.ext == 'wav' || this.ext == 'mp3' || this.ext =='midi') className = 'file music';
         else if (this.ext == 'key') className = 'file key';

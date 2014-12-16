@@ -13,6 +13,13 @@ document.$get('upload').addEventListener('click', upload, false);
 document.$get('uploadclose').addEventListener('click', uploadClose, false);
 document.$get('uploadaction').addEventListener('click', uploadFile, false);
 document.$get('new').addEventListener('click', newFile, false);
+document.$get('newfilecancel').addEventListener('click', newFileCancel, false);
+document.$get('newfolder').addEventListener('click', newFolder, false);
+document.$get('newtextfile').addEventListener('click', newTextFile, false);
+document.$get('fileclose').addEventListener('click', closeFilePopup, false);
+document.$get('filerename').addEventListener('click', renameFile, false);
+document.$get('fileopen').addEventListener('click', openFile, false);
+document.$get('filedelete').addEventListener('click', deleteFile, false);
 
 $include('scripts/display.js');
 $include('scripts/ftpclient.js');
@@ -37,6 +44,9 @@ function connect(){
     document.$get('viewraw').innerHTML = 'View raw';
     document.$get('raw').$addClass('hidden');
     document.$get('uploadpopup').$addClass('hidden');
+    document.$get('newfilepopup').$addClass('hidden');
+    document.$get('filepopup').$addClass('hidden');
+    document.$get('ayspopup').$addClass('hidden');
     var host = document.$get('host').value;
     var port = document.$get('port').value;
     var login = document.$get('login').value;
@@ -156,7 +166,45 @@ function uploadFile(){
 }
 function newFile(){
     document.$get('uploadpopup').$addClass('hidden');
+    document.$get('menupopup').$addClass('hidden');
     document.$get('aboutpopup').$addClass('hidden');
     document.$get('errorpopup').$addClass('hidden');
     document.$get('newfilepopup').$removeClass('hidden');
+}
+function newFileCancel(){
+    document.$get('newfilepopup').$addClass('hidden');
+}
+function newFolder(){
+    var name = document.$get('newfilename').value.trim();
+    if (name != ''){
+       ftp.createFolder(name);
+    } 
+    document.$get('newfilepopup').$addClass('hidden');
+}
+function newTextFile(){
+    var name = document.$get('newfilename').value.trim();
+    if (name != ''){
+       ftp.createTextFile(name);
+    }
+    document.$get('newfilepopup').$addClass('hidden');
+}
+function setFile(f){
+    file = f;
+}
+function closeFilePopup(){
+    document.$get('filepopup').$addClass('hidden');
+}
+function openFile(){
+    ftp.openFile(file);
+    closeFilePopup();
+}
+function deleteFile(){
+    document.$get('ayspopup').$removeClass('hidden');
+    //ftp.deleteFile(file);
+}
+function renameFile(){
+    var newName = document.$get('filename').value;
+    if (newName != file.name){
+        ftp.rename(file, newName);
+    }
 }

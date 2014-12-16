@@ -19,6 +19,108 @@ body{
 	padding: 0 0 40px 0;
 	margin: 0;
 }
+button[disabled]{
+    color: gray !important;
+    opacity: 0.8;
+}/** ARE YOU SURE POPUP */
+#ayspopup{
+    border: 10px solid red;
+    padding: 20px;
+    background: white;
+    position: fixed;
+    top: 10px;
+    border-radius: 14px;
+    width: 70%;
+    margin: 0 5%;
+    z-index: 15;
+}
+#aysbutton{
+    text-align: center;
+    width: 100%;
+    padding: 25px 0 0 0;
+}
+#aysbutton button{
+    color: white;
+    padding: 20px;
+    margin: 0 10px;
+}
+#aysyes{
+    background: #5B48DE;    
+}
+#aysno{
+    background: #DE4848;    
+}
+/** FILE POPUP */
+#filename{
+    margin: 0 0 20px 0;
+    width: 98%;
+}
+#filepopup{
+    border: 2px solid #953734;
+    padding: 20px;
+    background: white;
+    position: fixed;
+    top: 10px;
+    border-radius: 5px;
+    width: 70%;
+    margin: 0 10%;
+    z-index: 11;
+}
+#filebutton button{
+    margin: 0px 5px 5px 0px;
+    color: #FFF;
+    padding: 15px 0px;
+    width: 100%;
+}
+#fileopen{
+    background: #5B48DE;
+}
+#fileclose{
+    background: #DE4848;
+}
+#filerename{
+    background: #34BC49;
+}
+#filedelete{
+    background: #B325B3;
+}
+#filedownload{
+    background: #129595;
+}
+/** NEW FILE POPUP */
+#newfilepopup{
+    border: 2px solid #953734;
+    padding: 20px;
+    background: white;
+    position: fixed;
+    top: 10px;
+    border-radius: 5px;
+    width: 70%;
+    margin: 0 10%;
+    z-index: 11;
+}
+#newfilepopup div{
+    margin: 0px 0px 10px 0px;
+}
+#newfilebutton{
+    text-align: center;
+}
+#newfilebutton button{
+    margin: 0px 5px 5px 0px;
+    color: #FFF;
+    padding: 15px 0px;
+    width: 100%;
+}
+#newfolder{
+    background: #5B48DE;
+}
+#newfilecancel{
+    background: #DE4848;
+}
+#newtextfile{
+    background: #34BC49;
+}
+
 /** UPLOAD POPUP */
 #uploadpopup{
     border: 2px solid #953734;
@@ -75,12 +177,7 @@ body{
     height: 44px;
     padding: 5px 0;
     border-bottom: 1px dotted lightgray;
-}
-.clickable{
     cursor: pointer;
-}
-.unclickable{
-    background: #F2F2F2;
 }
 .filerow span{
     top: 12px;
@@ -162,13 +259,13 @@ textarea{
     background: #419C46;
 }
 #reload{
-     background: #469DA1;
+     background: #E3B139;
  }
  #upload{
       background: #2042D5;
   }
 #new{
-    background: #C6C624;
+    background: #129595;
 }
 /** FILE CONTENT */
  #buttons{
@@ -193,6 +290,9 @@ textarea{
 }
 .fitted{
     width: 100%;
+}
+#content{
+    overflow-y: hidden;
 }
 /** ERROR */
 #errorpopup{
@@ -225,7 +325,7 @@ textarea{
 #aboutpopup{
     border: 2px solid #953734;
     padding: 20px;
-    background: white;
+    background: #F2E1DF;
     position: fixed;
     top: 60px;
     border-radius: 5px;

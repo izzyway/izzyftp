@@ -2,9 +2,12 @@ $required(IzzyObject, "IzzyObject");
 
 function Display(ftp){
 	IzzyObject.call(this);
+  this.timer = null;
 }
 Display.prototype = Object.create(IzzyObject.prototype);
 Display.prototype.constructor = Display;
+
+Display.LONG_CLICK_TIME = 1000;
 
 Display.prototype.setClient = function (client){
     this.client = client;
@@ -87,28 +90,43 @@ Display.prototype.error= function (code, message, exception){
     document.$get('errorpopup').$removeClass('hidden');
     this.loading(100);
 }
+Display.prototype.openFilePopup = function(file){
+    setFile(file);
+    document.$get('filepopup').$removeClass('hidden');
+    var instance = this;
+    var input = document.$get('filename'); 
+    input.value = file.name;
+    var classes = file.getClassNames();
+    this.debug('Open file '+file.name+' ('+classes+')');
+    if (classes.indexOf('text') >= 0 || classes.indexOf('image') >= 0){
+        document.$get('fileopen').$unset('disabled');
+    }else{
+        document.$get('fileopen').$set('disabled', 'disabled');
+    }
+}
 Display.prototype.add = function(file){
     if (file.type != 'FOLDER' || file.name != '.'){
-        var ftp = this.client;
+        var instance = this;
         var zclass = file.getClassNames();
         var main = $new('div').$set({'class':'filerow'});
         document.$get('screen').$append(main);
         main.$append($new('span', file.getPrettyName()).$set({'class':zclass}));
-        if (file.type == 'FILE'){
-            if (zclass.indexOf('text')>=0){
-                    main.onclick = function(){ftp.openTextFile(file)};
-                    main.$addClass('clickable');
-            }else if (zclass.indexOf('image')>=0){
-                    main.onclick = function(){ftp.openImageFile(file)};
-                    main.$addClass('clickable');
-            }else{
-                main.$addClass('unclickable');
-            }
-        }else if (file.type == 'FOLDER' && file.name != '.'){
-            main.onclick = function(){ftp.openFolder(file)};
-            main.$addClass('clickable');
-        }else{
-            main.$addClass('unclickable');
+        if (file.type == 'FOLDER'){
+            main.onclick = function(){
+                ftp.openFolder(file);
+                window.clearTimeout(instance.timer);
+            };
+        }
+        if (file.type != 'FOLDER' || file.name != '..'){
+            main.addEventListener('touchstart', function(){
+                instance.timer = window.setTimeout(function(){
+                    instance.openFilePopup(file);
+                }, Display.LONG_CLICK_TIME);
+            }, false);
+
+            main.addEventListener('touchend', function(){
+                window.clearTimeout(instance.timer);
+            }, false);
         }
     }
 }

@@ -45,6 +45,9 @@ FTPClient.REPLY_CODES = {
     LIST: {possible:[125, 150, 226, 250, 425, 426, 451, 450, 500, 501, 502, 421, 530], success:[125, 250]},
     RETR: {possible:[125, 150, 110, 226, 250, 425, 426, 451, 450, 550, 500, 501, 421, 530], success:[125, 250]},
     MKD: {possible:[257, 550, 500, 501, 502, 421, 530], success:[257]},
+    RNFR: {possible:[450, 550, 500, 501, 502, 421, 530, 350], success:[350]},
+    DELE: {possible:[250, 450, 550, 500, 501, 502, 421, 530], success:[250]},
+    RNTO: {possible:[250, 532, 553, 500, 501, 502, 503, 421, 530], success:[250]},
     QUIT: {possible:[221, 500], success:[221]}
 };
 
@@ -176,14 +179,22 @@ FTPClient.prototype._retr = function(data){
         this._throw(e);
     }
 }
+FTPClient.prototype.rename = function(file, newName){
+    this.debug('Rename file '+file.name+' to '+newName);
+    this.RNFR(file.name, newName);
+}
 FTPClient.prototype.openTextFile=function(file){
     this.data = '';
     this.currentFile = file;
     this.dataType = 'txt';
     this.TYPE('A');
-    this.RETR(this.abs());
+    if (file.size > 0){
+       this.RETR(this.abs());  
+       this.display.loading(0);
+    }else{
+        this.display.displayText('');
+    } 
     this.display.path(file.name);
-    this.display.loading(0);
 }
 FTPClient.prototype.openImageFile=function(file){
     this.data =  new Uint8Array(0);
@@ -193,6 +204,11 @@ FTPClient.prototype.openImageFile=function(file){
     this.RETR(this.abs());
     this.display.path(file.name);
     this.display.loading(0);
+}
+FTPClient.prototype.openFile=function(file){
+    var classes = file.getClassNames();
+    if (classes.indexOf('text')>=0) this.openTextFile(file);
+    else if (classes.indexOf('image')>=0) this.openImageFile(file);
 }
 FTPClient.prototype.setPath=function(){
     this.display.path(this.path);
@@ -206,6 +222,9 @@ FTPClient.prototype.saveTextFile = function(data){
     this.display.loading(0);
     this.dataType = 'txt';
     this.STOR(this.abs());
+}
+FTPClient.prototype.deleteFile = function(file){
+    this.DELE(file.name);
 }
 FTPClient.prototype.uploadFile = function(name, file){
     this.dataType = 'bin';
@@ -222,6 +241,7 @@ FTPClient.prototype._sendData = function(){
                 this.display.console('Text data ('+this.data.length+')', 'dataType');
                 this.currentFile.size = this.data.length;
                 this.dataSocket.send(this.data, this);
+                this.dataSocket.close();
                 break;
             case 'bin':            
                 if (this.currentUploadFile){
@@ -283,6 +303,20 @@ FTPClient.prototype._displayFolder=function(files){
         }
     }
     this.display.loading(100);
+}
+FTPClient.prototype.createFolder = function(name){
+    this._changePath(name);
+    this.MKD(this.path);
+    this.LIST();
+}
+FTPClient.prototype.createTextFile = function(name){
+    this.display.displayText('');
+    this.display.path(name);
+    this.currentFile = new File();
+    this.currentFile.name = name;
+    this.currentFile.type='FILE';
+    this.dataType = 'txt';
+    this.TYPE('A');
 }
 FTPClient.prototype.reload = function(){
     this.LIST();
@@ -443,10 +477,17 @@ FTPClient.prototype.command = function(command){
 FTPClient.prototype.LIST = function(){
     var instance = this;
     this.data = '';
+    var command = new FTPCommand('LIST', null, null, null, function(data){instance._list(data);});
     this.dataType = 'list';
-    this.TYPE('A');
-    this.PASV();
-	this.command(new FTPCommand('LIST', null, null, null, function(data){instance._list(data);}));
+    if (this.queue){
+        this.TYPE('A');  
+        this.PASV();
+        this.command(command);
+    }else{
+        this.command(command);
+        this.PASV();
+        this.TYPE('A');
+    } 
 }
 FTPClient.prototype.USER = function(){
 	this.command(new FTPCommand('USER', this.context.user));
@@ -493,6 +534,18 @@ FTPClient.prototype.TYPE = function(type){
 FTPClient.prototype.MKD = function(name){
   var instance = this;
  	this.command(new FTPCommand('MKD', name, null, function(){instance.queue=false;instance.CWD(name);instance.queue=true;}));
+}
+FTPClient.prototype.RNFR = function(oldname, newname){
+  var instance = this;
+ 	this.command(new FTPCommand('RNFR', oldname, null, function(){instance.queue=false;instance.RNTO(newname);instance.queue=true;}));    
+}
+FTPClient.prototype.RNTO = function(name){
+  var instance = this;
+ 	this.command(new FTPCommand('RNTO', name, null, function(){instance.queue=false;instance.LIST();instance.queue=true;}));
+}
+FTPClient.prototype.DELE = function(name){
+  var instance = this;
+ 	this.command(new FTPCommand('DELE', name, null, function(){instance.queue=false;instance.LIST();instance.queue=true;}));    
 }
 FTPClient.prototype.reset = function(){
     this.context = null;
