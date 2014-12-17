@@ -22,7 +22,8 @@ body{
 button[disabled]{
     color: gray !important;
     opacity: 0.8;
-}/** ARE YOU SURE POPUP */
+}
+/** ARE YOU SURE POPUP */
 #ayspopup{
     border: 10px solid red;
     padding: 20px;
@@ -50,6 +51,19 @@ button[disabled]{
 #aysno{
     background: #DE4848;    
 }
+#modal{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: gray;
+    z-index: 14;
+    opacity: 0.5;
+}
+#aysfilename{
+    font-weight: bold;
+}
 /** FILE POPUP */
 #filename{
     margin: 0 0 20px 0;
@@ -64,7 +78,7 @@ button[disabled]{
     border-radius: 5px;
     width: 70%;
     margin: 0 10%;
-    z-index: 11;
+    z-index: 15;
 }
 #filebutton button{
     margin: 0px 5px 5px 0px;
@@ -423,8 +437,14 @@ textarea{
 .folder{
     background: url('../app-icons/folder.png') no-repeat top left;
 }
-.music{
+.audio{
     background: url('../app-icons/music.png') no-repeat top left;
+}
+.application{
+    background: url('../app-icons/application_xp_terminal.png') no-repeat top left;
+}
+.video{
+    background: url('../app-icons/film.png') no-repeat top left;
 }
 .css{
     background: url('../app-icons/css.png') no-repeat top left;

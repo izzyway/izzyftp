@@ -47,6 +47,7 @@ FTPClient.REPLY_CODES = {
     MKD: {possible:[257, 550, 500, 501, 502, 421, 530], success:[257]},
     RNFR: {possible:[450, 550, 500, 501, 502, 421, 530, 350], success:[350]},
     DELE: {possible:[250, 450, 550, 500, 501, 502, 421, 530], success:[250]},
+    RMD: {possible:[250, 500, 501, 502, 421, 530, 550], success:[250]},
     RNTO: {possible:[250, 532, 553, 500, 501, 502, 503, 421, 530], success:[250]},
     QUIT: {possible:[221, 500], success:[221]}
 };
@@ -96,11 +97,11 @@ FTPClient.prototype._received = function(data){
         this.display.input(data, 'command');
         var code = this._extractCode(data);
         this.debug('Code '+code+' received');
-        if (this.currentCommand != null && this.currentCommand.command != 'CONNECTION' && this.$in(FTPClient.REPLY_CODES.CONNECTION.success, code)){
+        if (this.currentCommand != null && this.currentCommand.command != 'CONNECTION' && $in(FTPClient.REPLY_CODES.CONNECTION.success, code)){
             // Some servers send several times the success code, just ignore the second time
             return;
         }
-        if (this.currentCommand != null && this.currentCommand.command != 'PASS' && this.$in(FTPClient.REPLY_CODES.PASS.success, code)){
+        if (this.currentCommand != null && this.currentCommand.command != 'PASS' && $in(FTPClient.REPLY_CODES.PASS.success, code)){
             // Some servers send several times the success code, just ignore the second time
             return;
         }
@@ -224,7 +225,8 @@ FTPClient.prototype.saveTextFile = function(data){
     this.STOR(this.abs());
 }
 FTPClient.prototype.deleteFile = function(file){
-    this.DELE(file.name);
+    if (file.type == 'FOLDER') this.RMD(file.name);
+    else this.DELE(file.name);
 }
 FTPClient.prototype.uploadFile = function(name, file){
     this.dataType = 'bin';
@@ -345,9 +347,9 @@ FTPClient.prototype._extractCode = function(data){
 	return code;
 }
 FTPClient.prototype._checkCode = function(code, codes, command){
-	if (!this.$in(codes.possible, code)) throw 'Wrong returned code ('+code+') for command '+command;
+	if (!$in(codes.possible, code)) throw 'Wrong returned code ('+code+') for command '+command;
 	else{
-		if (!this.$in(codes.success, code) && code != FTPClient.NEED_DATA_CONNECTION_CODE && code != FTPClient.CLOSE_DATA_CONNECTION_CODE) {
+		if (!$in(codes.success, code) && code != FTPClient.NEED_DATA_CONNECTION_CODE && code != FTPClient.CLOSE_DATA_CONNECTION_CODE) {
 			throw command+' failed, returned code: '+code;
 		}
 	}
@@ -463,12 +465,6 @@ FTPClient.prototype._sendCommand = function(){
         }
     }
 }
-FTPClient.prototype.$in = function(array, element){
-    for (var index = 0; index < array.length; index++){
-        if (array[index] == element) return true;
-    }
-    return false;
-}
 FTPClient.prototype.command = function(command){
 	if (this.queue) this.commandQueue.push(command);
 	else this.commandQueue.unshift(command);
@@ -546,6 +542,10 @@ FTPClient.prototype.RNTO = function(name){
 FTPClient.prototype.DELE = function(name){
   var instance = this;
  	this.command(new FTPCommand('DELE', name, null, function(){instance.queue=false;instance.LIST();instance.queue=true;}));    
+}
+FTPClient.prototype.RMD = function(name){
+  var instance = this;
+ 	this.command(new FTPCommand('RMD', name, null, function(){instance.queue=false;instance.LIST();instance.queue=true;}));    
 }
 FTPClient.prototype.reset = function(){
     this.context = null;

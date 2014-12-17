@@ -91,6 +91,7 @@ Display.prototype.error= function (code, message, exception){
     this.loading(100);
 }
 Display.prototype.openFilePopup = function(file){
+    modal(true);
     setFile(file);
     document.$get('filepopup').$removeClass('hidden');
     var instance = this;
@@ -98,6 +99,16 @@ Display.prototype.openFilePopup = function(file){
     input.value = file.name;
     var classes = file.getClassNames();
     this.debug('Open file '+file.name+' ('+classes+')');
+    if (file.type == 'FOLDER'){
+        document.$get('fileopen').$set('disabled', 'disabled');
+        document.$get('filedelete').$set('disabled', 'disabled');
+        document.$get('filedownload').$set('disabled', 'disabled');
+    }else{
+        document.$get('fileopen').$unset('disabled');
+        document.$get('filedelete').$unset('disabled');
+        document.$get('filedownload').$unset('disabled');
+    }
+    
     if (classes.indexOf('text') >= 0 || classes.indexOf('image') >= 0){
         document.$get('fileopen').$unset('disabled');
     }else{

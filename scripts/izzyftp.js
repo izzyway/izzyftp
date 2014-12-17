@@ -20,6 +20,9 @@ document.$get('fileclose').addEventListener('click', closeFilePopup, false);
 document.$get('filerename').addEventListener('click', renameFile, false);
 document.$get('fileopen').addEventListener('click', openFile, false);
 document.$get('filedelete').addEventListener('click', deleteFile, false);
+document.$get('filedownload').addEventListener('click', downloadFile, false);
+document.$get('aysno').addEventListener('click', areYouSureClose, false);
+document.$get('aysyes').addEventListener('click', areYouSureYes, false);
 
 $include('scripts/display.js');
 $include('scripts/ftpclient.js');
@@ -47,6 +50,7 @@ function connect(){
     document.$get('newfilepopup').$addClass('hidden');
     document.$get('filepopup').$addClass('hidden');
     document.$get('ayspopup').$addClass('hidden');
+    document.$get('modal').$addClass('hidden');
     var host = document.$get('host').value;
     var port = document.$get('port').value;
     var login = document.$get('login').value;
@@ -132,7 +136,10 @@ function upload(){
         file = this.result.blob;
         $log("Pick the file "+file.name);
         document.$get('uploadfile').value = file.name + ' (' +File.formatSize(file.size) + ')';
-        document.$get('uploadname').value = file.name;
+        var name = file.name;
+        var index = name.lastIndexOf('/');
+        if (index > 0) name = name.substring(index + 1);
+        document.$get('uploadname').value = name;
         document.$get('uploaddirectory').value = ftp.path;
         document.$get('menupopup').$addClass('hidden');
         document.$get('uploadpopup').$removeClass('hidden');
@@ -192,6 +199,7 @@ function setFile(f){
     file = f;
 }
 function closeFilePopup(){
+    modal(false);
     document.$get('filepopup').$addClass('hidden');
 }
 function openFile(){
@@ -200,11 +208,29 @@ function openFile(){
 }
 function deleteFile(){
     document.$get('ayspopup').$removeClass('hidden');
-    //ftp.deleteFile(file);
+    closeFilePopup();
+    modal(true);
+    document.$get('aysfilename').innerHTML = file.name;
+    document.$get('aysfiletype').innerHTML = file.type.toLowerCase();
 }
 function renameFile(){
     var newName = document.$get('filename').value;
     if (newName != file.name){
         ftp.rename(file, newName);
     }
+}
+function areYouSureClose(){
+    document.$get('ayspopup').$addClass('hidden');
+    modal(false);
+}
+function areYouSureYes(){
+    areYouSureClose();
+    ftp.deleteFile(file);
+}
+function modal(b){
+    if (!b) document.$get('modal').$addClass('hidden');
+    else document.$get('modal').$removeClass('hidden');
+}
+function downloadFile(){
+    
 }

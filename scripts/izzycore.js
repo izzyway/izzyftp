@@ -245,3 +245,11 @@ function $PUT(url, options){
 function $DELETE(url, options){
     $http('DELETE', url, options);
 }
+function $in(array, element){
+		if (array && array.length){
+    	for (var index = 0; index < array.length; index++){
+        if (array[index] == element) return true;
+    	}
+		}	
+    return false;
+}

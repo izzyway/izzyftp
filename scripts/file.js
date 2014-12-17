@@ -10,6 +10,15 @@ File.prototype.constructor = File;
 File.UNITS = ['', 'K', 'M', 'G', 'T'];
 File.BACK = new File(); File.BACK.name='..'; File.BACK.type='FOLDER';
 
+File.TEXT_TYPE = ['html', 'htm', 'xml', 'txt', 'css', 'conf', 'properties', 'property', 'prop', 'js', 'xls', 'py', 'log', 'java', 'sql', 'htaccess', 'md', 'php', 'php3', 'php4', 'php5'];
+File.AUDIO_TYPE = ['oga', 'spx', 'wav', 'mp3', 'midi', 'mid', 'flac', 'axa'];
+File.VIDEO_TYPE = ['ogg', 'ogv', 'wmv', 'mov', 'flv', 'mp4', 'mpg', 'mpeg', 'avi', 'axv', 'qt', 'mng', 'mkv', 'yuv', 'drc', 'asf', 'm4v', 'mpv', 'mp2'];
+File.IMAGE_TYPE = ['png', 'gif', 'jpg', 'bmp', 'jpeg', 'svg', 'bpg', 'tiff', 'rif', ', webp'];        
+File.APPLICATION_TYPE = ['ogx', 'exe', 'com'];
+File.COMPRESS_TYPE = ['zip', 'war', 'rar', 'tar', 'bz2', 'gz', 's7z'];
+      
+
+
 File.prototype._parse = function(line){
     var matches = line.match(/([dsl-]{1})([a-zA-Z-]{9})[\t ]+([0-9]+)[\t ]+([^\t ]+)[\t ]+([^\t ]+)[\t ]+([0-9]+)[\t ]+(.+)/);
     if (matches && matches.length == 8) {
@@ -63,29 +72,21 @@ File.prototype.getPrettyName = function(){
 File.prototype.getClassNames = function(){
     if (this.type == 'FILE'){
         var className = 'file';
-        if (this.ext == 'html' || this.ext == 'htm') className = 'file text xml html';
-        else if (this.ext == 'xml') className = 'file text xml';
-        else if (this.ext == 'txt') className = 'file text';
-        else if (this.ext == 'css') className = 'file text css';
-        else if (this.ext == 'conf') className = 'file text configuration';
-        else if (this.ext == 'properties' || this.ext == 'property' || this.ext == 'prop') className = 'file text configuration';
-        else if (this.ext == 'js') className = 'file text javascript';
-        else if (this.ext == 'xls') className = 'file excel';
-        else if (this.ext == 'py') className = 'file text python';
-        else if (this.ext == 'log') className = 'file text log';
-        else if (this.ext == 'sh') className = 'file text shell';
-        else if (this.ext == 'pdf') className = 'file pdf';
-		else if (this.ext == 'java') className = 'file text java';
-        else if (this.ext == 'sql') className = 'file text sql';
-        else if (this.ext == 'htaccess') className = 'file text htaccess';
-        else if (this.ext == 'md') className = 'file text markdown';
-        else if (this.ext == 'doc' || this.ext == 'docx') className = 'file word';
-        else if (this.ext == 'ppt') className = 'file powerpoint';
-        else if (this.ext == 'zip' || this.ext == 'war' || this.ext =='rar' || this.ext =='tar'|| this.ext =='bz2') className = 'file compress';
-        else if (this.ext == 'png' || this.ext == 'gif' || this.ext =='jpg' || this.ext =='bmp' || this.ext == 'jpeg') className = 'file image';
-        else if (this.ext == 'wav' || this.ext == 'mp3' || this.ext =='midi') className = 'file music';
-        else if (this.ext == 'key') className = 'file key';
-        else if (this.ext == 'php' || this.ext == 'php3' || this.ext == 'php4' || this.ext == 'php5') className = 'file text php';
+        if ($in(File.TEXT_TYPE, this.ext)) className += ' text';
+        else if ($in(File.AUDIO_TYPE, this.ext)) className += ' audio';
+        else if ($in(File.VIDEO_TYPE, this.ext)) className += ' video';
+        else if ($in(File.IMAGE_TYPE, this.ext)) className += ' image'; 
+        else if ($in(File.APPLICATION_TYPE, this.ext)) className += ' application';
+        else if ($in(File.COMPRESS_TYPE, this.ext)) className += ' compress';
+        
+        if ($in(['html', 'htm'], this.ext)) className += ' xml, html';
+        else if (this.ext == 'xml') className += ' xml';
+        else if (this.ext == 'xml') className += ' css';
+        else if (this.ext == 'xls') className += ' excel';
+        else if (this.ext == 'py') className += ' python';
+        else if (this.ext == 'js') className += ' javascript';
+        else if (this.ext == 'key') className += ' key';
+        
         return className;
     }else if (this.type == 'FOLDER') return 'folder';
     else if (this.type == 'SOCKET') return 'socket';
