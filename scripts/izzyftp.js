@@ -23,6 +23,7 @@ document.$get('filedelete').addEventListener('click', deleteFile, false);
 document.$get('filedownload').addEventListener('click', downloadFile, false);
 document.$get('aysno').addEventListener('click', areYouSureClose, false);
 document.$get('aysyes').addEventListener('click', areYouSureYes, false);
+document.$get('closereport').addEventListener('click', closeErrorReport, false);
 
 $include('scripts/display.js');
 $include('scripts/ftpclient.js');
@@ -125,8 +126,8 @@ function report(){
     $POST('http://izzyway.free.fr/firefox/bug.php',
         {   data:report,
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
-            success: function(data, code){$log(data);document.$get('thanks').$removeClass('hidden').innerHTML='Thanks'; document.$get('bug').$addClass('hidden'); },
-            error: function(data, code){document.$get('thanks').$removeClass('hidden').innerHTML='Error code '+code; document.$get('bug').$addClass('hidden'); }
+            success: function(data, code){$log(data);document.$get('thanks').$removeClass('hidden').innerHTML='Thanks'; document.$get('report').$addClass('hidden'); },
+            error: function(data, code){document.$get('thanks').$removeClass('hidden').innerHTML='Error code '+code; document.$get('report').$addClass('hidden'); }
         });
 }
 function upload(){
@@ -232,5 +233,41 @@ function modal(b){
     else document.$get('modal').$removeClass('hidden');
 }
 function downloadFile(){
-    
+    var classes = file.getClassNames();
+    var storageName;
+    var mimeType;
+    if (classes.indexOf('image')>=0){
+       storageName = 'pictures';
+       mimeType = 'image/'+file.ext; 
+    }else if (classes.indexOf('audio')>=0){
+       storageName = 'music';
+       mimeType = 'audio/'+file.ext; 
+    }else if (classes.indexOf('video')>=0){
+       storageName = 'videos';
+       mimeType = 'video/'+file.ext; 
+    }    
+    closeFilePopup();
+    if (storageName && mimeType){
+        ftp.downloadFile(file, function(data){
+            try{
+                var storage = navigator.getDeviceStorage(storageName);
+                var blob = new Blob([data], {type: mimeType}); 
+                var request = storage.addNamed(blob, file.name);
+                request.onsuccess = function () {
+                   var name = this.result;
+                   $log('File "' + name + '" successfully wrote on the '+storageName+' storage area');
+               }
+
+               request.onerror = function () {
+                 display.error(-2, this.error.name, 'Unable to write the file in '+storageName);
+               }
+            }catch(e){
+                display.error(-3, e, 'Unable to write the file in '+storageName);
+            }
+        });
+    }else display.error(-4, 'Cannot find appropriate storage' , 'Unable to download file');
+}
+function closeErrorReport(){
+    document.$get('errorpopup').$addClass('hidden');
+    modal(false);
 }

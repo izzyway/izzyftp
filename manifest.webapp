@@ -30,6 +30,10 @@
 		},
 		"systemXHR":{
 		    "description" : "Bug reporting, only after user validation and with anonymous data"
-		}
+		},
+			"device-storage:pictures":{ "access": "readwrite", "description": "Needed to download image files" },
+	   "device-storage:sdcard":{ "access": "readwrite", "description": "Needed to download unknow type files" },
+	   "device-storage:music":{ "access": "readwrite", "description": "Needed to download audio files" },
+	   "device-storage:videos":{ "access": "readwrite", "description": "Needed to download video files" }
 	}
 }

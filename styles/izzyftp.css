@@ -314,17 +314,18 @@ textarea{
     padding: 20px;
     background: white;
     position: fixed;
-    top: 60px;
+    top: 0px;
     border-radius: 5px;
     width: 70%;
     margin: 70px 10%;
     text-align: center;
-    z-index: 12;
+    z-index: 15;
 }
 #errorpopup button{
     margin: 16px 0 0 0;
     height: 40px;
     color: white;
+    width: 100%;
 }
 #errordetail{
     font-weight: bold;
@@ -334,6 +335,9 @@ textarea{
 }
 #report{
     background: #3B55A2;
+}
+#closereport{
+    background: #DE4848;
 }
 /** ABOUT */
 #aboutpopup{

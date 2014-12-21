@@ -32,6 +32,7 @@ function FTPClient(display, host, port, user, password){
 	this.display.setClient(this);
 	this.display.path('');
   this.catchCallback = null;
+  this.downloadCallback = null;
 }
 FTPClient.REPLY_CODES = {
     CONNECTION: {possible:[120, 220, 421], success:[220]},
@@ -65,7 +66,7 @@ FTPClient.prototype.connect = function(){
 	this.display.loading(0);
 	this.connecting();
 	this.PWD();
-    this.LIST();
+  this.LIST();
 }
 FTPClient.prototype.connecting = function(){
     try{
@@ -162,20 +163,26 @@ FTPClient.prototype._list = function(data){
 }
 FTPClient.prototype._retr = function(data){
     try{
+        var string;
         if (this.currentFile.getClassNames().indexOf('text')>=0){
             this.data += data;
-            this.display.displayText(this.data);
+            if (!this.downloadCallback) this.display.displayText(this.data);
+            string = true;
         }else{
             var temp = this.data;
             this.data =  new Uint8Array(temp.length + data.length);
             for (var index = 0; index < temp.length; index++) this.data[index] = temp[index];
             for (var index = 0; index < data.length; index++) this.data[index + temp.length] = data[index];
-            this.debug('Image length '+this.data.length);
-            this.display.displayImage(this.data, this.currentFile.ext);
+            if (!this.downloadCallback) this.display.displayImage(this.data, this.currentFile.ext);
+            string = false;
         }
-        var length = this.currentFile.length;
-        if (length>0) this.display.loading(Math.round(100 - 100*(length - this.data.length)/length));
-        else this.display.loading(100);
+        var length = this.currentFile.size;
+        var percent = length > 0?Math.round(100 - 100*(length - this.data.length)/length):100;
+        this.debug(this.data.length+'/'+length + ' ('+percent+'%)');
+        this.display.loading(percent);
+        if (length == this.data.length && this.downloadCallback){
+           this.downloadCallback.call(this, string?this.data:this.data.buffer);    
+        } 
     }catch(e){
         this._throw(e);
     }
@@ -191,25 +198,26 @@ FTPClient.prototype.openTextFile=function(file){
     this.TYPE('A');
     if (file.size > 0){
        this.RETR(this.abs());  
-       this.display.loading(0);
+       if (!this.downloadCallback) this.display.loading(0);
     }else{
-        this.display.displayText('');
+        if (!this.downloadCallback) this.display.displayText('');
     } 
-    this.display.path(file.name);
+    if (!this.downloadCallback) this.display.path(file.name);
 }
-FTPClient.prototype.openImageFile=function(file){
+FTPClient.prototype.openBinFile=function(file){
     this.data =  new Uint8Array(0);
     this.currentFile = file;
     this.dataType = 'bin';
     this.TYPE('I');
     this.RETR(this.abs());
-    this.display.path(file.name);
+    if (!this.downloadCallback) this.display.path(file.name);
     this.display.loading(0);
 }
-FTPClient.prototype.openFile=function(file){
+FTPClient.prototype.openFile=function(file, dl){
+    if (!dl) this.downloadCallback = null;
     var classes = file.getClassNames();
     if (classes.indexOf('text')>=0) this.openTextFile(file);
-    else if (classes.indexOf('image')>=0) this.openImageFile(file);
+    else this.openBinFile(file);
 }
 FTPClient.prototype.setPath=function(){
     this.display.path(this.path);
@@ -234,6 +242,10 @@ FTPClient.prototype.uploadFile = function(name, file){
     this.display.loading(0);
     this.TYPE('I');
     this.STOR(name);
+}
+FTPClient.prototype.downloadFile = function(file, callback){
+    this.downloadCallback = callback;
+    this.openFile(file, true);
 }
 FTPClient.prototype._sendData = function(){
     try{

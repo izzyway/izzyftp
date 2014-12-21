@@ -66,6 +66,7 @@ Display.prototype.displayImage= function (data, ext){
     document.$get('save').$addClass('hidden');
 }
 Display.prototype.error= function (code, message, exception){
+    modal(true);
     if (exception == 'ConnectionRefusedError'){
         document.$get('errormsg').innerHTML = 'Connection failed, check the host and the port';
         document.$get('errordetail').innerHTML = '';
@@ -86,6 +87,9 @@ Display.prototype.error= function (code, message, exception){
         document.$get('errordetail').innerHTML = message;
         document.$get('report').$removeClass('hidden')
         document.$get('back').$removeClass('hidden');
+        this.console(code);
+        this.console(exception);
+        this.console(message);        
     }
     document.$get('errorpopup').$removeClass('hidden');
     this.loading(100);
@@ -108,7 +112,11 @@ Display.prototype.openFilePopup = function(file){
         document.$get('filedelete').$unset('disabled');
         document.$get('filedownload').$unset('disabled');
     }
-    
+    if (classes.indexOf('image') >= 0 || classes.indexOf('audio') >= 0 || classes.indexOf('video') >= 0){
+        document.$get('filedownload').$unset('disabled');
+    }else{
+        document.$get('filedownload').$set('disabled', 'disabled');
+    }
     if (classes.indexOf('text') >= 0 || classes.indexOf('image') >= 0){
         document.$get('fileopen').$unset('disabled');
     }else{
