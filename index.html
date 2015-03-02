@@ -46,7 +46,7 @@
     </div>
     <!-- ABOUT POPUP -->
     <div id = "aboutpopup">
-        izzy FTP 0.8 by
+        izzy FTP 1.00 by
         <a href = "http://izzyway.com/" target = "_blank">izzyway.com</a>
         <div id = "slogan">Tech'it izzy</div>
     </div>
@@ -92,7 +92,7 @@
     </div>    
     <!-- MENU -->
     <div id = "menupopup">
-        <button id="upload" class = "button">Upload an picture</button>
+        <button id="upload" class = "button">Upload a picture</button>
         <button id="new" class = "button">New</button>
         <button id="viewraw" class = "button"></button>
         <button id="reload" class = "button">Reload</button>
@@ -103,10 +103,17 @@
 
 <div id = "connection">
     <h1 id = "title">izzy FTP</h1>
-        <div>
-            <p>Host:</p>
-            <input name = "host" id = "host" type = "text" value = "" />
+        <div id = "keychain">
+            <p>Keychain:</p>
+            <select name = "key" id = "key">
+            </select>
+            <button id = "initkey"></button>
+            <div id = "optionkey"><input type = "checkbox" name = "savekeychain" id = "savekeychain" checked = "checked"> save in keychain </input></div>
         </div>
+        <div>
+            <p>Host:</p>            
+            <input name = "host" id = "host" type = "text" value = "" />
+        </div>    
         <div>
             <p>Port:</p>
             <input name = "port" id = "port" type = "number" value = "21" />

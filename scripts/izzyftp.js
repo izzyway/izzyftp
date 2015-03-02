@@ -1,4 +1,4 @@
-document.$get('menu').addEventListener('click', menu, false);
+-document.$get('menu').addEventListener('click', menu, false);
 document.$get('connect').addEventListener('click', connect, false);
 document.$get('about').addEventListener('click', about, false);
 document.$get('viewraw').addEventListener('click', raw, false);
@@ -24,6 +24,8 @@ document.$get('filedownload').addEventListener('click', downloadFile, false);
 document.$get('aysno').addEventListener('click', areYouSureClose, false);
 document.$get('aysyes').addEventListener('click', areYouSureYes, false);
 document.$get('closereport').addEventListener('click', closeErrorReport, false);
+document.$get('initkey').addEventListener('click', initEntry, false);
+document.$get('aboutpopup').addEventListener('click', about, false);
 
 $include('scripts/display.js');
 $include('scripts/ftpclient.js');
@@ -31,6 +33,7 @@ $include('scripts/ftpclient.js');
 var ftp;
 var display;
 var file;
+var keychain = {};
 
 function menu(){
     var menu = document.$get('menupopup');
@@ -38,6 +41,11 @@ function menu(){
     else menu.$addClass('hidden');
 }
 function connect(){
+    var host = document.$get('host').value;
+    var port = document.$get('port').value;
+    var login = document.$get('login').value;
+    var password = document.$get('password').value;
+    
     document.$get('menupopup').$addClass('hidden');
     document.$get('connection').$addClass('hidden');
     document.$get('aboutpopup').$addClass('hidden');
@@ -52,14 +60,14 @@ function connect(){
     document.$get('filepopup').$addClass('hidden');
     document.$get('ayspopup').$addClass('hidden');
     document.$get('modal').$addClass('hidden');
-    var host = document.$get('host').value;
-    var port = document.$get('port').value;
-    var login = document.$get('login').value;
-    var password = document.$get('password').value;
-	display = new Display();
+    
+	  display = new Display();
     display.clearAll();
-	ftp = new FTPClient(display, host, port, login, password);
-	ftp.connect();
+	  ftp = new FTPClient(display, host, port, login, password);
+	  ftp.connect();
+    if (document.$get('savekeychain').$value()){
+        addEntry(host, port, login, password, false);
+    }
 }
 function about(){
     var about = document.$get('aboutpopup');
@@ -173,6 +181,7 @@ function uploadFile(){
     uploadClose();
 }
 function newFile(){
+    modal(true);
     document.$get('uploadpopup').$addClass('hidden');
     document.$get('menupopup').$addClass('hidden');
     document.$get('aboutpopup').$addClass('hidden');
@@ -180,6 +189,7 @@ function newFile(){
     document.$get('newfilepopup').$removeClass('hidden');
 }
 function newFileCancel(){
+    modal(false);
     document.$get('newfilepopup').$addClass('hidden');
 }
 function newFolder(){
@@ -271,3 +281,58 @@ function closeErrorReport(){
     document.$get('errorpopup').$addClass('hidden');
     modal(false);
 }
+function initEntry(){
+    var value = document.$get('key').$value();
+    if (value == 'clear'){
+        localStorage.setItem('keys', '');
+        resetEntry();
+    }else{
+        var entry = keychain[value];
+        if ($isJSONObject(entry)){
+            document.$get('login').value = entry.login;
+            document.$get('password').value = entry.password;
+            document.$get('port').value = entry.port;
+            document.$get('host').value = entry.host;
+        }
+    }
+}
+function addEntry(host, port, login, password, load){
+    if (document.$get('key').$has('disabled')) promptEntry();
+    var label = login + '@' + host + ':' + port;
+    var key = label.$hash();
+    var exists = $isJSONObject(keychain[key]);
+    keychain[key] = {'host':host, 'login':login, 'password':password, 'port':port};
+    if (!load) {
+        var keys = localStorage.getItem('keys');
+        var entries = JSON.parse(!keys | keys == ''?'[]':$decode(keys));  
+        entries.push(keychain[key]);
+        localStorage.setItem('keys', $encode(JSON.stringify(entries)));
+    }
+    if (!exists){
+       var option = $new('option', label);
+       option.value = key;
+       document.$get('key').insertBefore(option, document.$get('clearentry'));
+    }
+}
+
+var CLEAR_OPTION = '<option id = "clearentry" value = "clear">Clear all</option>';
+function resetEntry(){
+    document.$get('key').$set('disabled', 'disabled').innerHTML = '<option>No entry</option>' + CLEAR_OPTION;
+}
+function promptEntry(){
+    document.$get('key').$unset('disabled').innerHTML = '<option>Select an entry</option>' + CLEAR_OPTION;
+}
+
+var keys = localStorage.getItem('keys');
+if (!keys || keys ==''){
+     resetEntry();
+}else{
+    promptEntry();
+    var decoded = $decode(keys);
+    var entries = JSON.parse(decoded);  
+    for (var index = 0; index < entries.length; index++){
+        var entry = entries[index];
+        addEntry(entry.host, entry.port, entry.login, entry.password, true);        
+    }
+}
+

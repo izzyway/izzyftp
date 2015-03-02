@@ -51,6 +51,9 @@ Element.prototype.$unset = function(name){
 	this.removeAttribute(name);
 	return this;
 }
+Element.prototype.$has = function(name){
+	return this.hasAttribute(name);
+}
 /** Append an Element to the Element */
 Element.prototype.$append = function(element){
 	if (!element) throw 'Cannot append NULL element';
@@ -94,6 +97,11 @@ Element.prototype.$removeClass = function(name){
         }else this.className = this.className.replace(' '+name, '');
     }
     return this;
+}
+Element.prototype.$value = function(){
+  if (this.selectedIndex) return this.options[this.selectedIndex].value;
+	else if (typeof this.checked !== 'undefined') return this.checked;
+	else return this.value;
 }
 /** Get an Element with the attribute id set to the given id */
 Document.prototype.$get = function(id){
@@ -177,7 +185,16 @@ function $inline(i){
     str = str.replace(/\t/g, '\\t');
     return str;
 }
-
+String.prototype.$hash = function() {
+  var hash = 0, i, chr, len;
+  if (this.length == 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return 'X' + hash;
+};
 function $base64(input) {
     var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
     var output = "";
@@ -252,4 +269,47 @@ function $in(array, element){
     	}
 		}	
     return false;
+}
+
+var CHAR_BIT_NUMBER = 64;
+function _string2BitArray(s) {
+		var a = [];
+		function bit(d) {
+			for (var i = 0; i < CHAR_BIT_NUMBER; i++) {
+				a.unshift(d % 2 == 1);
+				d = Math.floor(d / 2);
+			}
+		}
+    for (var i = s.length - 1; i >= 0; i--) {
+        bit(s.charCodeAt(i));
+    }
+    return a;
+}
+function _bitArray2String(a){
+	var s = '';
+	var c = 0;
+	var b = CHAR_BIT_NUMBER;
+	for (var i = 0; i < a.length; i++){
+        c += (a[i]?1:0) * Math.pow(2, --b);
+        if (b == 0){
+					s+= String.fromCharCode(c);
+					c = 0; 
+					b = CHAR_BIT_NUMBER;
+				} 
+	 }
+	 return s;
+}
+
+function $encode(data){
+	function r(a, index){
+		for (var i = 0; i<10; i++) a[index-i]=!a[index-i];
+	}
+	var a = _string2BitArray(data);
+	for (var i=0; i<a.length; i++){
+		if ((i+1)%CHAR_BIT_NUMBER==0) r(a, i);
+	}
+	return '001-'+_bitArray2String(a);
+}
+function $decode(data){
+	return $encode(data.substring(4)).substring(4);
 }

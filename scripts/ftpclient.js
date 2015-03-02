@@ -398,6 +398,10 @@ FTPClient.prototype._parsePassiveModeReply = function(reply){
 	var matches = reply.match(/[^(]*\(([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+),([0-9]+)\)[^)]*/);
 	if (matches && matches.length == 7){
 		this.dataHost = matches[1]+'.'+matches[2]+'.'+matches[3]+'.'+matches[4];
+    if (matches[1] == '10'){
+        instance.display.log('Fixing IP, replace '+instance.dataHost+' by '+instance.host);
+        instance.dataHost = instance.host;
+    }
 		this.dataPort = toDec(pad2(toHex(matches[5]))+pad2(toHex(matches[6])));
         this.dataSocket = new Socket(this.dataHost, this.dataPort,
                     {userSecureTransport:false,
