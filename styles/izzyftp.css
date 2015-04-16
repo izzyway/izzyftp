@@ -23,6 +23,9 @@ button[disabled]{
     color: gray !important;
     opacity: 0.8;
 }
+button{
+    font-size: 18px;
+}
 /** ARE YOU SURE POPUP */
 #ayspopup{
     border: 10px solid red;

@@ -137,13 +137,14 @@ Display.prototype.add = function(file){
             };
         }
         if (file.type != 'FOLDER' || file.name != '..'){
-            main.addEventListener('touchstart', function(){
+            main.addEventListener('touchstart', function(evt){
                 instance.timer = window.setTimeout(function(){
+                    evt.stopPropagation();
                     instance.openFilePopup(file);
                 }, Display.LONG_CLICK_TIME);
             }, false);
 
-            main.addEventListener('touchend', function(){
+            main.addEventListener('touchend', function(evt){
                 window.clearTimeout(instance.timer);
             }, false);
         }
