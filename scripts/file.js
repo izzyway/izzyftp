@@ -41,7 +41,15 @@ File.prototype._parse = function(line){
         if (this.type == 'FILE' && index >= 0 && index < this.name.length) this.ext = this.name.substring(index + 1).toLowerCase();
         else this.ext = '';
 		this.debug(this.type+(this.ext!=''?' ('+this.ext+')':'')+': "'+this.name+'" size: '+this.size);
-	}else this.info('Malformed file information line: '+line);
+	}else{
+      // Microsoft FTP
+      matches = line.match(/([0-9]{2}.[0-9]{2}.[0-9]{2,4})[\t ]+(.{5,})[\t ]+([0-9]+)[\t ]+(.+)/);
+      if (matches && matches.length == 5){
+          this.size = matches[3];
+          this.name = matches[4];
+          this.lastModified = matches[1]+' '+matches[2];
+      }else this.info('Malformed file information line: '+line);
+  } 
 }
 File.prototype.getPrettySize = function(){
     if (this.size && this.type == 'FILE'){
