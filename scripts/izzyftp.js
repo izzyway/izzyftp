@@ -26,6 +26,7 @@ document.$get('aysyes').addEventListener('click', areYouSureYes, false);
 document.$get('closereport').addEventListener('click', closeErrorReport, false);
 document.$get('initkey').addEventListener('click', initEntry, false);
 document.$get('aboutpopup').addEventListener('click', about, false);
+window.addEventListener('scroll', scroll, false);
 
 $include('scripts/display.js');
 $include('scripts/ftpclient.js');
@@ -313,6 +314,9 @@ function addEntry(host, port, login, password, load){
        option.value = key;
        document.$get('key').insertBefore(option, document.$get('clearentry'));
     }
+}
+function scroll(){
+    window.clearTimeout(display.timer);
 }
 
 var CLEAR_OPTION = '<option id = "clearentry" value = "clear">Clear all</option>';
