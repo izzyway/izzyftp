@@ -10,7 +10,7 @@ File.prototype.constructor = File;
 File.UNITS = ['', 'K', 'M', 'G', 'T'];
 File.BACK = new File(); File.BACK.name='..'; File.BACK.type='FOLDER';
 
-File.TEXT_TYPE = ['html', 'htm', 'xml', 'txt', 'css', 'conf', 'properties', 'property', 'prop', 'js', 'xls', 'py', 'log', 'java', 'sql', 'htaccess', 'md', 'php', 'php3', 'php4', 'php5'];
+File.TEXT_TYPE = ['html', 'htm', 'xml', 'txt', 'css', 'conf', 'properties', 'property', 'prop', 'js', 'xls', 'py', 'log', 'java', 'sql', 'htaccess', 'md', 'php', 'php3', 'php4', 'php5', 'asp'];
 File.AUDIO_TYPE = ['oga', 'spx', 'wav', 'mp3', 'midi', 'mid', 'flac', 'axa'];
 File.VIDEO_TYPE = ['ogg', 'ogv', 'wmv', 'mov', 'flv', 'mp4', 'mpg', 'mpeg', 'avi', 'axv', 'qt', 'mng', 'mkv', 'yuv', 'drc', 'asf', 'm4v', 'mpv', 'mp2'];
 File.IMAGE_TYPE = ['png', 'gif', 'jpg', 'bmp', 'jpeg', 'svg', 'bpg', 'tiff', 'rif', ', webp', 'tif'];        
