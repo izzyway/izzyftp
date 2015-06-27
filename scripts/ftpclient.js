@@ -50,6 +50,7 @@ FTPClient.REPLY_CODES = {
     DELE: {possible:[250, 450, 550, 500, 501, 502, 421, 530], success:[250]},
     RMD: {possible:[250, 500, 501, 502, 421, 530, 550], success:[250]},
     RNTO: {possible:[250, 532, 553, 500, 501, 502, 503, 421, 530], success:[250]},
+    FEAT: {possible:[200, 211, 500, 502], success:[200, 211, 500, 502]},
     QUIT: {possible:[221, 500], success:[221]}
 };
 
@@ -82,6 +83,7 @@ FTPClient.prototype.connecting = function(){
         this.connected();
         this.queue = false;
         if (this.path) this.CWD(this.path);
+        this.FEAT();
         if (this.context.user != '') this.USER();
         else this.debug('No user');
         this.queue = true;
@@ -377,6 +379,10 @@ FTPClient.prototype._parsePWDReply = function(reply){
     }else this._throw('Cannot parse path '+reply);
 
 }
+FTPClient.prototype._parseFeatReply = function(reply){
+    this.debug("Feat reply: "+reply);
+	
+}
 FTPClient.prototype._parsePassiveModeReply = function(reply){
 	var code = this._extractCode(reply, 227);
 	function toHex(n){
@@ -562,6 +568,10 @@ FTPClient.prototype.DELE = function(name){
 FTPClient.prototype.RMD = function(name){
   var instance = this;
  	this.command(new FTPCommand('RMD', name, null, function(){instance.queue=false;instance.LIST();instance.queue=true;}));    
+}
+FTPClient.prototype.FEAT = function(){
+  var instance = this;
+ 	this.command(new FTPCommand('FEAT', null, null, function(reply){instance._parseFeatReply(reply);}));    
 }
 FTPClient.prototype.reset = function(){
     this.context = null;

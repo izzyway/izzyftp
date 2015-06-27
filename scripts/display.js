@@ -13,7 +13,7 @@ Display.prototype.setClient = function (client){
     this.client = client;
 }
 Display.prototype.$log = function (msg, className){
-	document.$get('raw').$append($new('div', msg).$set({'class':className}));
+	$get('raw').append($new('div', msg).set({'class':className}));
 }
 Display.prototype.input = function (input, className){
 	this.$log(input, className);
@@ -22,114 +22,114 @@ Display.prototype.output = function (output){
 	this.$log(output, 'output');
 }
 Display.prototype.path = function (path){
-	document.$get('label').innerHTML = path;
+	$get('label').innerHTML = path;
 }
 Display.prototype.console = function (output, className){
 	if (className) this.$log(output, 'console '+className);
 	else this.$log(output, 'console');
 }
 Display.prototype.clear = function (){
-	document.$get('screen').innerHTML = '';
+	$get('screen').innerHTML = '';
 }
 Display.prototype.clearAll = function (){
-    this.clear();
-	document.$get('raw').innerHTML = '';
+  this.clear();
+	$get('raw').innerHTML = '';
 }
 Display.prototype.loading = function (percent){
-    document.$get('progress').value= percent;
+    $get('progress').value= percent;
 }
 Display.prototype.connected = function (){
-    document.$get('icon').$addClass('connected');
-    document.$get('icon').$removeClass('disconnected');
+    $get('icon').addClass('connected');
+    $get('icon').removeClass('disconnected');
 }
 Display.prototype.disconnected = function (){
-    document.$get('icon').$removeClass('connected');
-    document.$get('icon').$addClass('disconnected');
+    $get('icon').removeClass('connected');
+    $get('icon').addClass('disconnected');
 }
 Display.prototype.displayText= function (text){
-    var t = $new('textarea', text).$set('id', 'filecontent');
-    var content = document.$get('content');
+    var t = $new('textarea', text).set('id', 'filecontent');
+    var content = $get('content');
     content.innerHTML = '';
-    content.$insert(t);
-    document.$get('file').$removeClass('hidden');
-    document.$get('screen').$addClass('hidden');
-    document.$get('fit').$addClass('hidden');
-    document.$get('save').$removeClass('hidden');
+    content.insert(t);
+    $get('file').removeClass('hidden');
+    $get('screen').addClass('hidden');
+    $get('fit').addClass('hidden');
+    $get('save').removeClass('hidden');
 }
 Display.prototype.displayImage= function (data, ext){
-    var content = document.$get('content');
+    var content = $get('content');
     content.innerHTML = '';
-    content.$append($new('img').$set({id:'img', src:'data:image/'+ext+';base64,'+$base64(data)}));
-    document.$get('file').$removeClass('hidden');
-    document.$get('screen').$addClass('hidden');
-    document.$get('fit').$removeClass('hidden').innerHTML = 'Fit';
-    document.$get('save').$addClass('hidden');
+    content.append($new('img').set({id:'img', src:'data:image/'+ext+';base64,'+data.base64()}));
+    $get('file').removeClass('hidden');
+    $get('screen').addClass('hidden');
+    $get('fit').removeClass('hidden').innerHTML = 'Fit';
+    $get('save').addClass('hidden');
 }
 Display.prototype.error= function (code, message, exception){
     modal(true);
     if (exception == 'ConnectionRefusedError'){
-        document.$get('errormsg').innerHTML = 'Connection failed, check the host and the port';
-        document.$get('errordetail').innerHTML = '';
-        document.$get('report').$addClass('hidden');
-        document.$get('back').$removeClass('hidden');
+        $get('errormsg').innerHTML = 'Connection failed, check the host and the port';
+        $get('errordetail').innerHTML = '';
+        $get('report').addClass('hidden');
+        $get('back').removeClass('hidden');
     }else if (code == 530){
-        document.$get('errormsg').innerHTML = 'Connection failed, check the user and the password';
-        document.$get('errordetail').innerHTML = message;
-        document.$get('report').$addClass('hidden')
-        document.$get('back').$removeClass('hidden');
+        $get('errormsg').innerHTML = 'Connection failed, check the user and the password';
+        $get('errordetail').innerHTML = message;
+        $get('report').addClass('hidden')
+        $get('back').removeClass('hidden');
     }else if (code == -1){
-       document.$get('errormsg').innerHTML = 'Connection failed, host refused the connection, retry later';
-       document.$get('errordetail').innerHTML = '';
-       document.$get('report').$addClass('hidden')
-       document.$get('back').$removeClass('hidden');
+       $get('errormsg').innerHTML = 'Connection failed, host refused the connection, retry later';
+       $get('errordetail').innerHTML = '';
+       $get('report').addClass('hidden')
+       $get('back').removeClass('hidden');
     }else{
-        document.$get('errormsg').innerHTML = 'Unexpected error: '+exception;
-        document.$get('errordetail').innerHTML = message;
-        document.$get('report').$removeClass('hidden')
-        document.$get('back').$removeClass('hidden');
+        $get('errormsg').innerHTML = 'Unexpected error: '+exception;
+        $get('errordetail').innerHTML = message;
+        $get('report').removeClass('hidden')
+        $get('back').removeClass('hidden');
         this.console(code);
         this.console(exception);
         this.console(message);        
     }
-    document.$get('errorpopup').$removeClass('hidden');
+    $get('errorpopup').removeClass('hidden');
     this.loading(100);
 }
 Display.prototype.openFilePopup = function(file){
     modal(true);
     setFile(file);
-    document.$get('filepopup').$removeClass('hidden');
+    $get('filepopup').removeClass('hidden');
     var instance = this;
-    var input = document.$get('filename'); 
+    var input = $get('filename'); 
     input.value = file.name;
     var classes = file.getClassNames();
     this.debug('Open file '+file.name+' ('+classes+')');
     if (file.type == 'FOLDER'){
-        document.$get('fileopen').$set('disabled', 'disabled');
-        document.$get('filedelete').$set('disabled', 'disabled');
-        document.$get('filedownload').$set('disabled', 'disabled');
+        $get('fileopen').set('disabled', 'disabled');
+        $get('filedelete').set('disabled', 'disabled');
+        $get('filedownload').set('disabled', 'disabled');
     }else{
-        document.$get('fileopen').$unset('disabled');
-        document.$get('filedelete').$unset('disabled');
-        document.$get('filedownload').$unset('disabled');
+        $get('fileopen').unset('disabled');
+        $get('filedelete').unset('disabled');
+        $get('filedownload').unset('disabled');
     }
     if (classes.indexOf('image') >= 0 || classes.indexOf('audio') >= 0 || classes.indexOf('video') >= 0){
-        document.$get('filedownload').$unset('disabled');
+        $get('filedownload').unset('disabled');
     }else{
-        document.$get('filedownload').$set('disabled', 'disabled');
+        $get('filedownload').set('disabled', 'disabled');
     }
     if (classes.indexOf('text') >= 0 || classes.indexOf('image') >= 0){
-        document.$get('fileopen').$unset('disabled');
+        $get('fileopen').unset('disabled');
     }else{
-        document.$get('fileopen').$set('disabled', 'disabled');
+        $get('fileopen').set('disabled', 'disabled');
     }
 }
 Display.prototype.add = function(file){
     if (file.type != 'FOLDER' || file.name != '.'){
         var instance = this;
         var zclass = file.getClassNames();
-        var main = $new('div').$set({'class':'filerow'});
-        document.$get('screen').$append(main);
-        main.$append($new('span', file.getPrettyName()).$set({'class':zclass}));
+        var main = $new('div').set({'class':'filerow'});
+        $get('screen').append(main);
+        main.append($new('span', file.getPrettyName()).set({'class':zclass}));
         if (file.type == 'FOLDER'){
             main.onclick = function(){
                 ftp.openFolder(file);

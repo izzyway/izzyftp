@@ -1,31 +1,31 @@
--document.$get('menu').addEventListener('click', menu, false);
-document.$get('connect').addEventListener('click', connect, false);
-document.$get('about').addEventListener('click', about, false);
-document.$get('viewraw').addEventListener('click', raw, false);
-document.$get('disconnect').addEventListener('click', disconnect, false);
-document.$get('reload').addEventListener('click', reload, false);
-document.$get('save').addEventListener('click', save, false);
-document.$get('close').addEventListener('click', close, false);
-document.$get('fit').addEventListener('click', fit, false);
-document.$get('back').addEventListener('click', back, false);
-document.$get('report').addEventListener('click', report, false);
-document.$get('upload').addEventListener('click', upload, false);
-document.$get('uploadclose').addEventListener('click', uploadClose, false);
-document.$get('uploadaction').addEventListener('click', uploadFile, false);
-document.$get('new').addEventListener('click', newFile, false);
-document.$get('newfilecancel').addEventListener('click', newFileCancel, false);
-document.$get('newfolder').addEventListener('click', newFolder, false);
-document.$get('newtextfile').addEventListener('click', newTextFile, false);
-document.$get('fileclose').addEventListener('click', closeFilePopup, false);
-document.$get('filerename').addEventListener('click', renameFile, false);
-document.$get('fileopen').addEventListener('click', openFile, false);
-document.$get('filedelete').addEventListener('click', deleteFile, false);
-document.$get('filedownload').addEventListener('click', downloadFile, false);
-document.$get('aysno').addEventListener('click', areYouSureClose, false);
-document.$get('aysyes').addEventListener('click', areYouSureYes, false);
-document.$get('closereport').addEventListener('click', closeErrorReport, false);
-document.$get('initkey').addEventListener('click', initEntry, false);
-document.$get('aboutpopup').addEventListener('click', about, false);
+$get('menu').addEventListener('click', menu, false);
+$get('connect').addEventListener('click', connect, false);
+$get('about').addEventListener('click', about, false);
+$get('viewraw').addEventListener('click', raw, false);
+$get('disconnect').addEventListener('click', disconnect, false);
+$get('reload').addEventListener('click', reload, false);
+$get('save').addEventListener('click', save, false);
+$get('close').addEventListener('click', close, false);
+$get('fit').addEventListener('click', fit, false);
+$get('back').addEventListener('click', back, false);
+$get('report').addEventListener('click', report, false);
+$get('upload').addEventListener('click', upload, false);
+$get('uploadclose').addEventListener('click', uploadClose, false);
+$get('uploadaction').addEventListener('click', uploadFile, false);
+$get('new').addEventListener('click', newFile, false);
+$get('newfilecancel').addEventListener('click', newFileCancel, false);
+$get('newfolder').addEventListener('click', newFolder, false);
+$get('newtextfile').addEventListener('click', newTextFile, false);
+$get('fileclose').addEventListener('click', closeFilePopup, false);
+$get('filerename').addEventListener('click', renameFile, false);
+$get('fileopen').addEventListener('click', openFile, false);
+$get('filedelete').addEventListener('click', deleteFile, false);
+$get('filedownload').addEventListener('click', downloadFile, false);
+$get('aysno').addEventListener('click', areYouSureClose, false);
+$get('aysyes').addEventListener('click', areYouSureYes, false);
+$get('closereport').addEventListener('click', closeErrorReport, false);
+$get('initkey').addEventListener('click', initEntry, false);
+$get('aboutpopup').addEventListener('click', about, false);
 window.addEventListener('scroll', scroll, false);
 
 $include('scripts/display.js');
@@ -37,96 +37,96 @@ var file;
 var keychain = {};
 
 function menu(){
-    var menu = document.$get('menupopup');
-    if (menu.$hasClass('hidden')) menu.$removeClass('hidden');
-    else menu.$addClass('hidden');
+    var menu = $get('menupopup');
+    if (menu.hasClass('hidden')) menu.removeClass('hidden');
+    else menu.addClass('hidden');
 }
 function connect(){
-    var host = document.$get('host').value;
-    var port = document.$get('port').value;
-    var login = document.$get('login').value;
-    var password = document.$get('password').value;
+    var host = $get('host').value;
+    var port = $get('port').value;
+    var login = $get('login').value;
+    var password = $get('password').value;
     
-    document.$get('menupopup').$addClass('hidden');
-    document.$get('connection').$addClass('hidden');
-    document.$get('aboutpopup').$addClass('hidden');
-    document.$get('errorpopup').$addClass('hidden');
-    document.$get('screen').$removeClass('hidden');
-    document.$get('file').$addClass('hidden');
-    document.$get('display').$removeClass('hidden');
-    document.$get('viewraw').innerHTML = 'View raw';
-    document.$get('raw').$addClass('hidden');
-    document.$get('uploadpopup').$addClass('hidden');
-    document.$get('newfilepopup').$addClass('hidden');
-    document.$get('filepopup').$addClass('hidden');
-    document.$get('ayspopup').$addClass('hidden');
-    document.$get('modal').$addClass('hidden');
+    $get('menupopup').addClass('hidden');
+    $get('connection').addClass('hidden');
+    $get('aboutpopup').addClass('hidden');
+    $get('errorpopup').addClass('hidden');
+    $get('screen').removeClass('hidden');
+    $get('file').addClass('hidden');
+    $get('display').removeClass('hidden');
+    $get('viewraw').innerHTML = 'View raw';
+    $get('raw').addClass('hidden');
+    $get('uploadpopup').addClass('hidden');
+    $get('newfilepopup').addClass('hidden');
+    $get('filepopup').addClass('hidden');
+    $get('ayspopup').addClass('hidden');
+    $get('modal').addClass('hidden');
     
 	  display = new Display();
     display.clearAll();
 	  ftp = new FTPClient(display, host, port, login, password);
 	  ftp.connect();
-    if (document.$get('savekeychain').$value()){
+    if ($get('savekeychain').getValue()){
         addEntry(host, port, login, password, false);
     }
 }
 function about(){
-    var about = document.$get('aboutpopup');
-    if (about.$hasClass('hidden')) about.$removeClass('hidden');
-    else about.$addClass('hidden');
+    var about = $get('aboutpopup');
+    if (about.hasClass('hidden')) about.removeClass('hidden');
+    else about.addClass('hidden');
 }
 function raw(){
-    var raw = document.$get('raw');
-    var screen = document.$get('screen');
-    var button = document.$get('viewraw');
-    if (raw.$hasClass('hidden')){
-        screen.$addClass('hidden');
+    var raw = $get('raw');
+    var screen = $get('screen');
+    var button = $get('viewraw');
+    if (raw.hasClass('hidden')){
+        screen.addClass('hidden');
         button.innerHTML = 'View data';
-        raw.$removeClass('hidden');
-        document.$get('file').$addClass('hidden');
+        raw.removeClass('hidden');
+        $get('file').addClass('hidden');
     }else{
-        raw.$addClass('hidden');
+        raw.addClass('hidden');
         button.innerHTML = 'View raw';
-        screen.$removeClass('hidden');
+        screen.removeClass('hidden');
     }
     menu();
 }
 function disconnect(){
-    document.$get('login').value = '';
-    document.$get('password').value = '';
-    document.$get('viewraw').innerHTML = 'Raw';
+    $get('login').value = '';
+    $get('password').value = '';
+    $get('viewraw').innerHTML = 'Raw';
     back();
     ftp.disconnect();
     ftp.reset();
 }
 function back(){
-    document.$get('display').$addClass('hidden');
-    document.$get('connection').$removeClass('hidden');
+    $get('display').addClass('hidden');
+    $get('connection').removeClass('hidden');
 }
 function reload(){
     ftp.reload();
     menu();
 }
 function save(){
-    ftp.saveTextFile(document.$get('filecontent').value);
+    ftp.saveTextFile($get('filecontent').value);
 }
 function close(){
-    document.$get('file').$addClass('hidden');
-    document.$get('screen').$removeClass('hidden');
+    $get('file').addClass('hidden');
+    $get('screen').removeClass('hidden');
     ftp.setPath();
 }
 function fit(){
-    var img = document.$get('img');
-    if (img.$hasClass('fitted')){
-        img.$removeClass('fitted');
-        document.$get('fit').innerHTML = 'Fit';
+    var img = $get('img');
+    if (img.hasClass('fitted')){
+        img.removeClass('fitted');
+        $get('fit').innerHTML = 'Fit';
     }else{
-        img.$addClass('fitted')
-        document.$get('fit').innerHTML = 'Unfit';
+        img.addClass('fitted')
+        $get('fit').innerHTML = 'Unfit';
     }
 }
 function report(){
-    var report = document.$get('raw').innerHTML;
+    var report = $get('raw').innerHTML;
     report = report.replace(/USER [^<]+/g, 'USER ******');
     report = report.replace(/Connected to [^<]+/g, 'Connected to ......');
     report = report.replace(/User [^<]+ log/g, 'User ****** log');
@@ -135,8 +135,8 @@ function report(){
     $POST('http://izzyway.free.fr/firefox/bug.php',
         {   data:report,
             headers:{'Content-Type':'application/x-www-form-urlencoded'},
-            success: function(data, code){$log(data);document.$get('thanks').$removeClass('hidden').innerHTML='Thanks'; document.$get('report').$addClass('hidden'); },
-            error: function(data, code){document.$get('thanks').$removeClass('hidden').innerHTML='Error code '+code; document.$get('report').$addClass('hidden'); }
+            success: function(data, code){$log(data);$get('thanks').removeClass('hidden').innerHTML='Thanks'; $get('report').addClass('hidden'); },
+            error: function(data, code){$get('thanks').removeClass('hidden').innerHTML='Error code '+code; $get('report').addClass('hidden'); }
         });
 }
 function upload(){
@@ -145,26 +145,26 @@ function upload(){
     pickImageActivity.onsuccess = function() {
         file = this.result.blob;
         $log("Pick the file "+file.name);
-        document.$get('uploadfile').value = file.name + ' (' +File.formatSize(file.size) + ')';
+        $get('uploadfile').value = file.name + ' (' +File.formatSize(file.size) + ')';
         var name = file.name;
         var index = name.lastIndexOf('/');
         if (index > 0) name = name.substring(index + 1);
-        document.$get('uploadname').value = name;
-        document.$get('uploaddirectory').value = ftp.path;
-        document.$get('menupopup').$addClass('hidden');
-        document.$get('uploadpopup').$removeClass('hidden');
+        $get('uploadname').value = name;
+        $get('uploaddirectory').value = ftp.path;
+        $get('menupopup').addClass('hidden');
+        $get('uploadpopup').removeClass('hidden');
     };
     pickImageActivity.onerror = function() {
         $log(this.result);
     };
 }
 function uploadClose(){
-    document.$get('uploadpopup').$addClass('hidden');
+    $get('uploadpopup').addClass('hidden');
 }
 function uploadFile(){
     if (file && ftp){
-        var fileDirectory = document.$get('uploaddirectory').value;
-        var fileName = document.$get('uploadname').value;
+        var fileDirectory = $get('uploaddirectory').value;
+        var fileName = $get('uploadname').value;
         if (fileDirectory != ftp.path){
             ftp.catch(
                 function(){
@@ -183,56 +183,56 @@ function uploadFile(){
 }
 function newFile(){
     modal(true);
-    document.$get('uploadpopup').$addClass('hidden');
-    document.$get('menupopup').$addClass('hidden');
-    document.$get('aboutpopup').$addClass('hidden');
-    document.$get('errorpopup').$addClass('hidden');
-    document.$get('newfilepopup').$removeClass('hidden');
+    $get('uploadpopup').addClass('hidden');
+    $get('menupopup').addClass('hidden');
+    $get('aboutpopup').addClass('hidden');
+    $get('errorpopup').addClass('hidden');
+    $get('newfilepopup').removeClass('hidden');
 }
 function newFileCancel(){
     modal(false);
-    document.$get('newfilepopup').$addClass('hidden');
+    $get('newfilepopup').addClass('hidden');
 }
 function newFolder(){
-    var name = document.$get('newfilename').value.trim();
+    var name = $get('newfilename').value.trim();
     if (name != ''){
        ftp.createFolder(name);
     } 
-    document.$get('newfilepopup').$addClass('hidden');
+    $get('newfilepopup').addClass('hidden');
 }
 function newTextFile(){
-    var name = document.$get('newfilename').value.trim();
+    var name = $get('newfilename').value.trim();
     if (name != ''){
        ftp.createTextFile(name);
     }
-    document.$get('newfilepopup').$addClass('hidden');
+    $get('newfilepopup').addClass('hidden');
 }
 function setFile(f){
     file = f;
 }
 function closeFilePopup(){
     modal(false);
-    document.$get('filepopup').$addClass('hidden');
+    $get('filepopup').addClass('hidden');
 }
 function openFile(){
     ftp.openFile(file);
     closeFilePopup();
 }
 function deleteFile(){
-    document.$get('ayspopup').$removeClass('hidden');
+    $get('ayspopup').removeClass('hidden');
     closeFilePopup();
     modal(true);
-    document.$get('aysfilename').innerHTML = file.name;
-    document.$get('aysfiletype').innerHTML = file.type.toLowerCase();
+    $get('aysfilename').innerHTML = file.name;
+    $get('aysfiletype').innerHTML = file.type.toLowerCase();
 }
 function renameFile(){
-    var newName = document.$get('filename').value;
+    var newName = $get('filename').value;
     if (newName != file.name){
         ftp.rename(file, newName);
     }
 }
 function areYouSureClose(){
-    document.$get('ayspopup').$addClass('hidden');
+    $get('ayspopup').addClass('hidden');
     modal(false);
 }
 function areYouSureYes(){
@@ -240,8 +240,8 @@ function areYouSureYes(){
     ftp.deleteFile(file);
 }
 function modal(b){
-    if (!b) document.$get('modal').$addClass('hidden');
-    else document.$get('modal').$removeClass('hidden');
+    if (!b) $get('modal').addClass('hidden');
+    else $get('modal').removeClass('hidden');
 }
 function downloadFile(){
     var classes = file.getClassNames();
@@ -279,52 +279,52 @@ function downloadFile(){
     }else display.error(-4, 'Cannot find appropriate storage' , 'Unable to download file');
 }
 function closeErrorReport(){
-    document.$get('errorpopup').$addClass('hidden');
+    $get('errorpopup').addClass('hidden');
     modal(false);
 }
 function initEntry(){
-    var value = document.$get('key').$value();
+    var value = $get('key').getValue();
     if (value == 'clear'){
         localStorage.setItem('keys', '');
         resetEntry();
     }else{
         var entry = keychain[value];
         if ($isJSONObject(entry)){
-            document.$get('login').value = entry.login;
-            document.$get('password').value = entry.password;
-            document.$get('port').value = entry.port;
-            document.$get('host').value = entry.host;
+            $get('login').value = entry.login;
+            $get('password').value = entry.password;
+            $get('port').value = entry.port;
+            $get('host').value = entry.host;
         }
     }
 }
 function addEntry(host, port, login, password, load){
-    if (document.$get('key').$has('disabled')) promptEntry();
+    if ($get('key').has('disabled')) promptEntry();
     var label = login + '@' + host + ':' + port;
-    var key = label.$hash();
+    var key = label.hash();
     var exists = $isJSONObject(keychain[key]);
     keychain[key] = {'host':host, 'login':login, 'password':password, 'port':port};
     if (!load) {
         var keys = localStorage.getItem('keys');
-        var entries = JSON.parse(!keys | keys == ''?'[]':$decode(keys));  
+        var entries = JSON.parse(!keys | keys == ''?'[]':keys.decode());
         entries.push(keychain[key]);
-        localStorage.setItem('keys', $encode(JSON.stringify(entries)));
+        localStorage.setItem('keys', JSON.stringify(entries).encode());
     }
     if (!exists){
        var option = $new('option', label);
        option.value = key;
-       document.$get('key').insertBefore(option, document.$get('clearentry'));
+       $get('key').insertBefore(option, $get('clearentry'));
     }
 }
 function scroll(){
-    window.clearTimeout(display.timer);
+    if (display) window.clearTimeout(display.timer);
 }
 
 var CLEAR_OPTION = '<option id = "clearentry" value = "clear">Clear all</option>';
 function resetEntry(){
-    document.$get('key').$set('disabled', 'disabled').innerHTML = '<option>No entry</option>' + CLEAR_OPTION;
+    $get('key').set('disabled', 'disabled').innerHTML = '<option>No entry</option>' + CLEAR_OPTION;
 }
 function promptEntry(){
-    document.$get('key').$unset('disabled').innerHTML = '<option>Select an entry</option>' + CLEAR_OPTION;
+    $get('key').unset('disabled').innerHTML = '<option>Select an entry</option>' + CLEAR_OPTION;
 }
 
 var keys = localStorage.getItem('keys');
@@ -332,11 +332,20 @@ if (!keys || keys ==''){
      resetEntry();
 }else{
     promptEntry();
-    var decoded = $decode(keys);
+    var decoded = keys.decode();
     var entries = JSON.parse(decoded);  
     for (var index = 0; index < entries.length; index++){
         var entry = entries[index];
         addEntry(entry.host, entry.port, entry.login, entry.password, true);        
     }
 }
-
+String.prototype.hash = function() {
+  var hash = 0, i, chr, len;
+  if (this.length == 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return 'X' + hash;
+};
