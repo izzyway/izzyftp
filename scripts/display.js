@@ -59,7 +59,7 @@ Display.prototype.displayText= function (text){
 Display.prototype.displayImage= function (data, ext){
     var content = $get('content');
     content.innerHTML = '';
-    content.append($new('img').set({id:'img', src:'data:image/'+ext+';base64,'+data.base64()}));
+    content.append($new('img').set({id:'img', src:'data:image/'+ext+';base64,'+$base64(data)}));
     $get('file').removeClass('hidden');
     $get('screen').addClass('hidden');
     $get('fit').removeClass('hidden').innerHTML = 'Fit';

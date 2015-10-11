@@ -33,6 +33,7 @@ function FTPClient(display, host, port, user, password){
 	this.display.path('');
   this.catchCallback = null;
   this.downloadCallback = null;
+  this.secured = false;
 }
 FTPClient.REPLY_CODES = {
     CONNECTION: {possible:[120, 220, 421], success:[220]},
@@ -74,7 +75,7 @@ FTPClient.prototype.connecting = function(){
         var instance = this;
         this.currentCommand = FTPClient.CONNECTION;
         this.commandSocket = new Socket(this.host, this.port,
-                        {userSecureTransport:false,
+                        {useSecureTransport:this.secured,
                          binaryType:'string',
                          received: function(data){instance._received(data);},
                          error: function(error){instance.error(error);},
@@ -83,7 +84,7 @@ FTPClient.prototype.connecting = function(){
         this.connected();
         this.queue = false;
         if (this.path) this.CWD(this.path);
-        this.FEAT();
+        // this.FEAT();
         if (this.context.user != '') this.USER();
         else this.debug('No user');
         this.queue = true;
@@ -410,7 +411,7 @@ FTPClient.prototype._parsePassiveModeReply = function(reply){
     }
 		this.dataPort = toDec(pad2(toHex(matches[5]))+pad2(toHex(matches[6])));
         this.dataSocket = new Socket(this.dataHost, this.dataPort,
-                    {userSecureTransport:false,
+                    {useSecureTransport:this.secured,
                      binaryType: this.binaryType,
                      received: function(data){instance._dataReceived(data);},
                      error: function(error){instance._null(error);},

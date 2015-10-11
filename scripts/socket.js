@@ -3,7 +3,7 @@ $required(IzzyObject, "IzzyObject");
 function Socket(host, port, options){
 	IzzyObject.call(this);
 
-	var DEFAULT_OPTIONS = {userSecureTransport:false, binaryType:'string'};
+	var DEFAULT_OPTIONS = {useSecureTransport:false, binaryType:'string'};
 
 	this.host = host;
 	this.port = port;
@@ -22,7 +22,7 @@ Socket.prototype.constructor = Socket;
 Socket.prototype.connect = function(){
     this.debug('Connecting to '+this.host+':'+this.port);
     this.socket = this._initSocket(navigator.mozTCPSocket.open(this.host, this.port, this.options));
-    this.info('Connected to '+this.host+':'+this.port);
+	this.info('Connected to '+this.host+':'+this.port +" (secured: "+this.options.useSecureTransport+")");
     this.connected = true;
 }
 Socket.prototype._initSocket = function(socket){
@@ -46,7 +46,7 @@ Socket.prototype._received = function(evt){
 }
 Socket.prototype._error = function(evt){
 	var data = evt.data;
-	this.debug('Error ('+evt.type+') '+this.host+':'+this.port+' - '+$stringify(data));
+	this.debug('Error ('+evt.type+') '+this.host+':'+this.port+' - '+$stringify(data.name));
 	if (this._onerror) this._onerror.call(this, data);
 }
 Socket.prototype._close = function(evt){

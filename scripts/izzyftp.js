@@ -1,3 +1,15 @@
+String.prototype.hash = function() {
+  var hash = 0, i, chr, len;
+  if (this.length == 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return 'X' + hash;
+}
+
+
 $get('menu').addEventListener('click', menu, false);
 $get('connect').addEventListener('click', connect, false);
 $get('about').addEventListener('click', about, false);
@@ -194,6 +206,7 @@ function newFileCancel(){
     $get('newfilepopup').addClass('hidden');
 }
 function newFolder(){
+    modal(false);
     var name = $get('newfilename').value.trim();
     if (name != ''){
        ftp.createFolder(name);
@@ -201,6 +214,7 @@ function newFolder(){
     $get('newfilepopup').addClass('hidden');
 }
 function newTextFile(){
+    modal(false);
     var name = $get('newfilename').value.trim();
     if (name != ''){
        ftp.createTextFile(name);
@@ -339,13 +353,3 @@ if (!keys || keys ==''){
         addEntry(entry.host, entry.port, entry.login, entry.password, true);        
     }
 }
-String.prototype.hash = function() {
-  var hash = 0, i, chr, len;
-  if (this.length == 0) return hash;
-  for (i = 0, len = this.length; i < len; i++) {
-    chr   = this.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return 'X' + hash;
-};

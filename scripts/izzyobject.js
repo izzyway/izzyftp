@@ -5,7 +5,7 @@ IzzyObject.prototype.toString = function(){
 }
 
 IzzyObject.prototype.debug = function(msg){
-	//$log(this.toString() + ': '+msg);
+	$log(this.toString() + ': '+msg);
 }
 
 IzzyObject.prototype.info = function(msg){

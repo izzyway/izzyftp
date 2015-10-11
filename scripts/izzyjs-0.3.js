@@ -1,5 +1,5 @@
 /**
-Izzy JavaScript Library v0.1
+Izzy JavaScript Library v0.2
 http://izzyjs.izzyway.com/
 
 Copyright 2006, izzyway.com and other contributors
@@ -36,9 +36,9 @@ String
 Version of the framework
 @constant 
 @type {String}
-@default 0.1
+@default 0.2
 */
-const $IZZYJS_VERSION = '0.1';
+const $IZZYJS_VERSION = '0.2';
 
 /** 
 Create an Element 
@@ -271,15 +271,27 @@ Element.prototype.setValue = function(value){
   else this.value = value;
   return this;
 }
-
-
+/**
+Get the width of the Element
+@return {Number} - The width of the Element
+*/
+Element.prototype.getWidth = function(){
+  return this.offsetWidth;
+}
+/**
+Get the height of the Element
+@return {Number} - The height of the Element
+*/
+Element.prototype.getHeight = function(){
+  return this.offsetHeight;
+}
 /** 
 Return true if the input obj is a JSON array 
 @param {Object} obj - Input object
 @return {Boolean} - True is the input object is a JSONArray
 */
 function $isJSONArray(obj){
-	return obj && obj.toString && typeof obj.length != 'undefined' && /\[.*\]/.test(JSON.stringify(obj));
+	return obj && obj.toString && typeof obj.length != 'undefined' && obj.constructor === [].constructor;
 }
 /** 
 Return true if the input obj is a JSON Object 
@@ -287,7 +299,7 @@ Return true if the input obj is a JSON Object
 @return {Boolean} - True is the input object is a JSONObject
 */
 function $isJSONObject(obj){
-	return obj && obj.toString && obj.toString() == '[object Object]' && /{.*}/.test(JSON.stringify(obj));
+	return obj && obj.toString && obj.constructor === {}.constructor;
 }
 /** 
 Return true if the input obj is a Number 
@@ -415,45 +427,37 @@ Encode in base64 the string
 @see String.unbase64
 */
 String.prototype.base64 = function() {
-    const keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+	return $base64(this);
+}
+/**
+Encode a string in base64
+@return {String} - The encoded string
+@param {String} input - A string
+*/
+function $base64(input) {
+    var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
     var output = "";
     var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
     var i = 0;
-    var input = this.replace(/\r\n/g, "\n");
-    var utftext = "";
-   for (var n = 0; n < input.length; n++) {
-    var c = input.charCodeAt(n);
-    if (c < 128) {
-        utftext += String.fromCharCode(c);
-    }else if ((c > 127) && (c < 2048)) {
-        utftext += String.fromCharCode((c >> 6) | 192);
-        utftext += String.fromCharCode((c & 63) | 128);
-    }else {
-        utftext += String.fromCharCode((c >> 12) | 224);
-        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-        utftext += String.fromCharCode((c & 63) | 128);
-    }
-   }
-  while (i < utftext.length) {
 
-            chr1 = utftext.charCodeAt(i++);
-            chr2 = utftext.charCodeAt(i++);
-            chr3 = utftext.charCodeAt(i++);
+    while (i < input.length) {
+        chr1 = input.charCodeAt?input.charCodeAt(i++):input[i++];
+        chr2 = i < input.length ? input.charCodeAt?input.charCodeAt(i++):input[i++] : Number.NaN;
+        chr3 = i < input.length ? input.charCodeAt?input.charCodeAt(i++):input[i++] : Number.NaN; 
 
-            enc1 = chr1 >> 2;
-            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-            enc4 = chr3 & 63;
+        enc1 = chr1 >> 2;
+        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+        enc4 = chr3 & 63;
 
-            if (isNaN(chr2)) {
-                enc3 = enc4 = 64;
-            } else if (isNaN(chr3)) {
-                enc4 = 64;
-            }
-
-            output = output + keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4);
-
+        if (isNaN(chr2)) {
+            enc3 = enc4 = 64;
+        } else if (isNaN(chr3)) {
+            enc4 = 64;
         }
+        output += keyStr.charAt(enc1) + keyStr.charAt(enc2) +
+                  keyStr.charAt(enc3) + keyStr.charAt(enc4);
+    }
     return output;
 }
 /**
@@ -462,12 +466,20 @@ Decode a base64 string
 @see String.base64
 */
 String.prototype.unbase64 = function() {
+	return $unbase64(this);
+}
+/**
+Decode a base64 string
+@return {String} - The decoded representation of the input string
+@param {String} input - A base64 string
+*/
+function $unbase64(input){
     const keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
     var output = "";
        var chr1, chr2, chr3;
         var enc1, enc2, enc3, enc4;
         var i = 0;
-        input = this.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
         while (i < input.length) {
             enc1 = keyStr.indexOf(input.charAt(i++));
             enc2 = keyStr.indexOf(input.charAt(i++));
